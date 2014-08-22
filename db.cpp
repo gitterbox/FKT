@@ -6,7 +6,7 @@ using namespace std;
 
 Database::Database()
 {
-	cout << "db alive" << endl;
+    cout << "db is alive" << endl;
 }
 
 Database::~Database()
