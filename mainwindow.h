@@ -46,6 +46,7 @@
 #include <QTimer>
 #include "../../qcustomplot.h"	// the header file of QCustomPlot. Don't forget to add it to your project, if you use an IDE, so it gets compiled.
 #include "db.h"
+#include "gui.h"
 
 namespace Ui {
 	class MainWindow;
@@ -89,6 +90,7 @@ namespace Ui {
 	QTimer dataTimer;
 	QCPItemTracer *itemDemoPhaseTracer;
 	int currentDemoIndex;
+    Gui gui;
     Database db;
     //double *values;
     int currentRow;

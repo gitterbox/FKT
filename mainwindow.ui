@@ -21,6 +21,31 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>548</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="statusTip">
+    <string>Datei mit Messwerten öffnen</string>
+   </property>
+   <widget class="QMenu" name="Datei">
+    <property name="title">
+     <string>Datei</string>
+    </property>
+    <addaction name="action_ffnen"/>
+   </widget>
+   <addaction name="Datei"/>
+  </widget>
+  <action name="action_ffnen">
+   <property name="text">
+    <string>öffnen</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -32,5 +57,22 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>action_ffnen</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>79</x>
+     <y>41</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

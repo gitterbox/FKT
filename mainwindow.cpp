@@ -66,8 +66,8 @@ ui(new Ui::MainWindow)
 	    ("/home/rene/Documents/Projekte/informatik/stick/GLP/Einlesen.csv");
 	currentRow = 2;
 	cnt = 0;
-    maxpics = 3;
-    delay = 350;
+  maxpics = 30;
+  delay = 350;
 //######################################################
     //setupDemo(16);
 	//QTimer::singleShot(500, this, SLOT(screenShot()));
