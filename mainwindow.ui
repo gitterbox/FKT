@@ -37,13 +37,20 @@
     <property name="title">
      <string>Datei</string>
     </property>
-    <addaction name="action_ffnen"/>
+    <addaction name="actionOeffnen"/>
+    <addaction name="separator"/>
+    <addaction name="actionProgramm_beenden"/>
    </widget>
    <addaction name="Datei"/>
   </widget>
-  <action name="action_ffnen">
+  <action name="actionOeffnen">
    <property name="text">
-    <string>öffnen</string>
+    <string>Öffnen</string>
+   </property>
+  </action>
+  <action name="actionProgramm_beenden">
+   <property name="text">
+    <string>Programm beenden</string>
    </property>
   </action>
  </widget>
@@ -59,14 +66,14 @@
  <resources/>
  <connections>
   <connection>
-   <sender>action_ffnen</sender>
+   <sender>actionProgramm_beenden</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>79</x>
-     <y>41</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>273</x>

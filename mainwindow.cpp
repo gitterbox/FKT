@@ -40,7 +40,9 @@
 *************************************************************************************************************/
 
 #include "mainwindow.h"
+//header file of mainwindow
 #include "ui_mainwindow.h"
+
 #include <QDebug>
 #include <QDesktopWidget>
 #include <QScreen>
@@ -55,12 +57,25 @@
 using namespace std;
 
 //TODO:
+ void MainWindow::openFile(){
+     QString fileName = QFileDialog::getOpenFileName(this);
+     QFile file(fileName);
+     if (file.open(QIODevice::ReadOnly|QIODevice::Text)){
+         //textEdit->setPlainText(
+         //   QString::fromUtf8(file.readAll() )
+         // );
+         statusBar()->showMessage(tr("Datei geladen"),5000);
+     }
+
+ }
 
  MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
 ui(new Ui::MainWindow)
 {
+    //calls setupUi method of mainwindow
 	ui->setupUi(this);
 	setGeometry(400, 250, 842, 390);
+    connect( ui->actionOeffnen, SIGNAL(triggered(bool)), this, SLOT(openFile()));
 //######################################################
 	db.read
 	    ("/home/rene/Documents/Projekte/informatik/stick/GLP/Einlesen.csv");
@@ -201,6 +216,7 @@ void MainWindow::setupQuadraticDemo(QCustomPlot * customPlot)
 	customPlot->yAxis->setRange(0, 1);
 }
 
+//not used yet
 void MainWindow::plotData(int row)
 {
 	QCustomPlot *customPlot = ui->customPlot;
@@ -1700,7 +1716,8 @@ void MainWindow::screenShot()
 	//QPixmap pm2 = qApp->primaryScreen()->grabWindow(
 
 #endif
-	QString fileName = demoName.toLower() + ".png";
+
+    QString fileName = demoName.toLower() + ".png";
 	fileName.replace(" ", "");
 	pm.save("/tmp/qt/" + fileName);
 	qApp->quit();
@@ -1754,6 +1771,6 @@ void MainWindow::allScreenShots()
 
 		QTimer::singleShot(delay, this, SLOT(allScreenShots()));
 	} else {
-		qApp->quit();
+    //	qApp->quit();
 	}
 }

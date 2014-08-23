@@ -79,10 +79,11 @@ namespace Ui {
 
 	void setupPlayground(QCustomPlot * customPlot);
 
-	private slots: void realtimeDataSlot();
+    public slots: void realtimeDataSlot();
 	void bracketDataSlot();
 	void screenShot();
 	void allScreenShots();
+    void openFile();
 
  private:
 	 Ui::MainWindow * ui;
