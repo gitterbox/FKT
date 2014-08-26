@@ -67,6 +67,8 @@ using namespace std;
 
          //http://stackoverflow.com/questions/11191762/qt-qstring-to-stdstring
          std::string utf8_text = fileName.toUtf8().constData();
+         // or this if you on Windows :-)
+         //std::string current_locale_text = qs.toLocal8Bit().constData();
          db.read(utf8_text);
          cout << utf8_text << endl;
          QString head("Datei ");
