@@ -84,6 +84,7 @@ namespace Ui {
 	void screenShot();
 	void allScreenShots();
     void openFile();
+    void createGif();
 
  private:
 	 Ui::MainWindow * ui;
@@ -98,6 +99,7 @@ namespace Ui {
     int cnt;
     int maxpics;
     int delay;
+    QString filename;
 };
 
 #endif				// MAINWINDOW_H

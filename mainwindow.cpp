@@ -59,57 +59,56 @@ using namespace std;
 //TODO:
  void MainWindow::openFile(){
      QString fileName = QFileDialog::getOpenFileName(this);
+     //set to class member
+     filename = fileName;
+
      QFile file(fileName);
      if (file.open(QIODevice::ReadOnly|QIODevice::Text)){
-         //textEdit->setPlainText(
-         //   QString::fromUtf8(file.readAll() )
-         // );
-         statusBar()->showMessage(tr("Datei geladen"),5000);
+
+         //http://stackoverflow.com/questions/11191762/qt-qstring-to-stdstring
+         std::string utf8_text = fileName.toUtf8().constData();
+         db.read(utf8_text);
+         cout << utf8_text << endl;
+         QString head("Datei ");
+         QString foot(" erfolgreich geladen");
+         statusBar()->showMessage(head+fileName+foot);
      }
 
  }
 
- MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
-ui(new Ui::MainWindow)
+ void::MainWindow::createGif(){
+    //ui->customPlot->
+    // for making screenshots of the current demo or all demos (for website screenshots):
+    QTimer::singleShot(2500, this, SLOT(allScreenShots()));
+    //QTimer::singleShot(1000, this, SLOT(screenShot()));
+    QString head(" ... erstelle GIF ...  ");
+    statusBar()->showMessage(filename+head);
+ }
+
+ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent), ui(new Ui::MainWindow)
 {
     //calls setupUi method of mainwindow
 	ui->setupUi(this);
+    //sets some geometry
 	setGeometry(400, 250, 842, 390);
+    //sets ui action for openFile
     connect( ui->actionOeffnen, SIGNAL(triggered(bool)), this, SLOT(openFile()));
-//######################################################
-	db.read
+    //sets ui cation for createGif
+    connect( ui->actionGif_Datei_erstellen, SIGNAL(triggered(bool)), this, SLOT(createGif()));
+
+    //######################################################
+    cout << "4 dbread" << endl;
+    //db.read
 	    ("/home/rene/Documents/Projekte/informatik/stick/GLP/Einlesen.csv");
 	currentRow = 2;
 	cnt = 0;
-  maxpics = 30;
-  delay = 350;
-//######################################################
+    maxpics = 30;
+    delay = 350;
+    //######################################################
     //setupDemo(16);
 	//QTimer::singleShot(500, this, SLOT(screenShot()));
 
-	setupPlayground(ui->customPlot);
-	// 0:  setupQuadraticDemo(ui->customPlot);
-	// 1:  setupSimpleDemo(ui->customPlot);
-	// 2:  setupSincScatterDemo(ui->customPlot);
-	// 3:  setupScatterStyleDemo(ui->customPlot);
-	// 4:  setupScatterPixmapDemo(ui->customPlot);
-	// 5:  setupLineStyleDemo(ui->customPlot);
-	// 6:  setupDateDemo(ui->customPlot);
-	// 7:  setupTextureBrushDemo(ui->customPlot);
-	// 8:  setupMultiAxisDemo(ui->customPlot);
-	// 9:  setupLogarithmicDemo(ui->customPlot);
-	// 10: setupRealtimeDataDemo(ui->customPlot);
-	// 11: setupParametricCurveDemo(ui->customPlot);
-	// 12: setupBarChartDemo(ui->customPlot);
-	// 13: setupStatisticalDemo(ui->customPlot);
-	// 14: setupSimpleItemDemo(ui->customPlot);
-	// 15: setupItemDemo(ui->customPlot);
-	// 16: setupStyledDemo(ui->customPlot);
-	// 17: setupAdvancedAxesDemo(ui->customPlot);
-
-	// for making screenshots of the current demo or all demos (for website screenshots):
-	QTimer::singleShot(2500, this, SLOT(allScreenShots()));
-	//QTimer::singleShot(1000, this, SLOT(screenShot()));
+   setupPlayground(ui->customPlot);
 }
 
 void MainWindow::setupDemo(int demoIndex)
@@ -270,7 +269,7 @@ void MainWindow::plotData(int row)
 
 void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 {
-	currentRow++;
+    currentRow++;
 	double *values;
 	//values = db.getLine2();//randomdata
 	values = db.getLine(currentRow);
@@ -1763,11 +1762,6 @@ void MainWindow::allScreenShots()
 		setupGLPDemo(ui->customPlot);
 		//setupDemo(currentDemoIndex + 1);
 		// setup delay for demos that need time to develop proper look:
-
-		if (currentDemoIndex == 10)	// Next is Realtime data demo
-			delay = 12000;
-		else if (currentDemoIndex == 15)	// Next is Item demo
-			delay = 5000;
 
 		QTimer::singleShot(delay, this, SLOT(allScreenShots()));
 	} else {

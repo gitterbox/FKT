@@ -31,7 +31,7 @@
     </rect>
    </property>
    <property name="statusTip">
-    <string>Datei mit Messwerten öffnen</string>
+    <string/>
    </property>
    <widget class="QMenu" name="Datei">
     <property name="title">
@@ -41,7 +41,14 @@
     <addaction name="separator"/>
     <addaction name="actionProgramm_beenden"/>
    </widget>
+   <widget class="QMenu" name="menuGLP">
+    <property name="title">
+     <string>GLP</string>
+    </property>
+    <addaction name="actionGif_Datei_erstellen"/>
+   </widget>
    <addaction name="Datei"/>
+   <addaction name="menuGLP"/>
   </widget>
   <action name="actionOeffnen">
    <property name="text">
@@ -51,6 +58,11 @@
   <action name="actionProgramm_beenden">
    <property name="text">
     <string>Programm beenden</string>
+   </property>
+  </action>
+  <action name="actionGif_Datei_erstellen">
+   <property name="text">
+    <string>Gif Datei erstellen</string>
    </property>
   </action>
  </widget>
