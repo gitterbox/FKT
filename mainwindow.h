@@ -57,7 +57,7 @@ namespace Ui {
 
     void plotData(int row);
 	void setupDemo(int demoIndex);
-	void setupQuadraticDemo(QCustomPlot * customPlot);
+    //void setupQuadraticDemo(QCustomPlot * customPlot);
 	void setupSimpleDemo(QCustomPlot * customPlot);
 	void setupSincScatterDemo(QCustomPlot * customPlot);
 	void setupScatterStyleDemo(QCustomPlot * customPlot);
