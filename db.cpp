@@ -16,7 +16,6 @@ Database::~Database()
 
 int Database::read(std::string path)
 {
-	if (lines.size() == 0) {
 
 		//inputfilestream
 		std::ifstream aFile;
@@ -29,20 +28,32 @@ int Database::read(std::string path)
 		}
 		//vector<string> lines;
 		string s;
+
+
+        if (lines.size() != 0) {
+            cout << "lines is allready filled .. cleaning all data " << endl;
+            lines.clear();
+        }
+
 		while (!aFile.eof()) {
 			getline(aFile, s);
 			lines.push_back(s);
 		}
 
+
+        //Debug
         //for (int i = 0; i < 5 && i < lines.size(); ++i)
-            //cout << "##" << lines.at(i) << "##" << endl;
+        //cout << "##" << lines.at(i) << "##" << endl;
 
 		cout << "lines is filled up" << endl;
 		aFile.close();
-		return 0;
-	} else {
-		return -1;
-	}
+
+        // naive check ;-)
+        if (lines.size() > 0) {
+            return 0;
+        } else {
+            return -1;
+        }
 }
 
 double Database::randomNumber()

@@ -65,6 +65,7 @@ using namespace std;
      if (file.open(QIODevice::ReadOnly|QIODevice::Text)){
 
          //http://stackoverflow.com/questions/11191762/qt-qstring-to-stdstring
+         //linux
          std::string utf8_text = fileName.toUtf8().constData();
          // or this if you on Windows :-)
          //std::string current_locale_text = qs.toLocal8Bit().constData();
@@ -89,25 +90,22 @@ using namespace std;
  MainWindow::MainWindow(QWidget * parent):QMainWindow(parent), ui(new Ui::MainWindow)
 {
     //calls setupUi method of mainwindow
-	ui->setupUi(this);
+    ui->setupUi(this);
     //sets some geometry
-	setGeometry(400, 250, 842, 390);
+    setGeometry(400, 250, 842, 390);
     //sets ui action for openFile
     connect( ui->actionOeffnen, SIGNAL(triggered(bool)), this, SLOT(openFile()));
-    //sets ui cation for createGif
+    //sets ui action for createGif
     connect( ui->actionGif_Datei_erstellen, SIGNAL(triggered(bool)), this, SLOT(createGif()));
 
     //######################################################
     cout << "4 dbread" << endl;
-    //db.read
-	    ("/home/rene/Documents/Projekte/informatik/stick/GLP/Einlesen.csv");
+    //db.read ("/home/rene/Documents/Projekte/informatik/stick/GLP/Einlesen.csv");
 	currentRow = 2;
 	cnt = 0;
     maxpics = 30;
     delay = 350;
     //######################################################
-    //setupDemo(16);
-	//QTimer::singleShot(500, this, SLOT(screenShot()));
 
    setupPlayground(ui->customPlot);
 }
@@ -139,60 +137,14 @@ void MainWindow::setupDemo(int demoIndex)
 	setWindowTitle("QCustomPlot: " + demoName);
 	statusBar()->clearMessage();
 	currentDemoIndex = demoIndex;
-	ui->customPlot->replot();
+    //b1
+    //ui->customPlot->replot();
 }
 
 
 //not used yet
 void MainWindow::plotData(int row)
 {
-	QCustomPlot *customPlot = ui->customPlot;
-
-	QString s = QString::number(row - 2);
-	demoName = "GLP_row:" + s + "°";
-
-	//amount of values of row
-	int max = 30;
-	//double step = 1/max;
-	Database db;
-	db.read("/media/exchange/PortableApps/Documents/GLP/Einlesen.csv");
-	double *values;
-	values = db.getLine(row);
-
-	QVector < double >x(max), y(max);	// initialize with entries 0..100
-	for (int i = 1; i < max; ++i) {
-		if (values[i] > -1 && values[i] < 1) {
-			x[i] = values[i];	// x goes from -1 to 1
-			cout << i << " x:" << x[i];
-		}
-		y[i] = 1 - (i * 0.03);
-		cout << i << " y:" << y[i] << endl;
-	}
-	// create graph and assign data to it:
-
-	int i = 2;
-	QPen pen;
-	customPlot->addGraph();
-	pen.setColor(QColor
-		     (sin(i * 1 + 1.2) * 80 + 80, sin(i * 0.3 + 0) * 80 + 80,
-		      sin(i * 0.3 + 1.5) * 80 + 80));
-	customPlot->graph()->setLineStyle(QCPGraph::lsNone);
-	customPlot->
-	    graph()->setScatterStyle(QCPScatterStyle
-				     (QCPScatterStyle::ssCircle, 9));
-
-	customPlot->graph()->setData(x, y);
-	// give the axes some labels:
-	QString valueAsString = QString::number(values[0]);
-	const QString xax = "x " + valueAsString + " Grad";
-	//string xlabel = "x "<<values[0]<<" Grad"
-	customPlot->xAxis->setLabel(xax);
-	customPlot->yAxis->setLabel("y");
-	// set axes ranges, so we see all data:
-	customPlot->xAxis->setRange(-1, 1);
-	customPlot->yAxis->setRange(1, 0);
-	//TODO: Plot to Image Export ?
-	delete[]values;
 }
 
 void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
@@ -242,10 +194,12 @@ void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 
 	//del memory of pointer (double[])
 	delete[]values;
+
+    ui->customPlot->replot();
 }
 
 
-
+//not used yet
 void MainWindow::realtimeDataSlot()
 {
 	// calculate two new data points:
@@ -299,6 +253,7 @@ void MainWindow::realtimeDataSlot()
 	}
 }
 
+//not used yet
 void MainWindow::bracketDataSlot()
 {
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
@@ -407,6 +362,7 @@ void MainWindow::allScreenShots()
 
 		QString fileName = scnt + ".png";
 		fileName.replace(" ", "");
+        //Todo: filename to settings
 		pm.save("/tmp/" + fileName);
 		//if (currentRow < 10){
 		if (dataTimer.isActive())
@@ -419,9 +375,16 @@ void MainWindow::allScreenShots()
 		setupGLPDemo(ui->customPlot);
 		//setupDemo(currentDemoIndex + 1);
 		// setup delay for demos that need time to develop proper look:
-
-		QTimer::singleShot(delay, this, SLOT(allScreenShots()));
+        statusBar()->showMessage("erstelle Bilddatei "+fileName);
+        QTimer::singleShot(delay, this, SLOT(allScreenShots()));
 	} else {
-    //	qApp->quit();
+       //all pics proccesed now doing else
+       int retval;
+       statusBar()->showMessage( "erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");
+       //linux
+       retval = system("/usr/bin/convert -delay 5 -loop 0 /tmp/*.png /tmp/anim.gif");
+       if (retval == 0) statusBar()->showMessage("Gif Datei erfolgreich erstellt");
+       //reset counter
+       cnt = 0;
 	}
 }
