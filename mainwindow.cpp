@@ -54,6 +54,9 @@
 
 #include <unistd.h>
 
+//Default Storage Locations depending on os e.g. /tmp vs. c:/.../temp
+#include <QStandardPaths>
+
 using namespace std;
 
  void MainWindow::openFile(){
@@ -330,8 +333,9 @@ void MainWindow::screenShot()
 
     QString fileName = demoName.toLower() + ".png";
 	fileName.replace(" ", "");
-	pm.save("/tmp/qt/" + fileName);
-	qApp->quit();
+    //pm.save( QDesktopServices::storageLocation( QDesktopServices::TempLocation ).toStdString()+"/qt/" + fileName);
+    pm.save( ( QStandardPaths::TempLocation )+"/qt/" + fileName);
+    qApp->quit();
 }
 
 void MainWindow::allScreenShots()
@@ -362,9 +366,12 @@ void MainWindow::allScreenShots()
 
 		QString fileName = scnt + ".png";
 		fileName.replace(" ", "");
+
         //Todo: filename to settings
-		pm.save("/tmp/" + fileName);
-		//if (currentRow < 10){
+        //QString path = QStandardPaths::TempLocation+"/"+fileName;
+        QString temploc = QDir::tempPath();
+        pm.save(temploc+"/"+fileName);
+        //if (currentRow < 10){
 		if (dataTimer.isActive())
 			dataTimer.stop();
 		dataTimer.disconnect();
@@ -378,11 +385,18 @@ void MainWindow::allScreenShots()
         statusBar()->showMessage("erstelle Bilddatei "+fileName);
         QTimer::singleShot(delay, this, SLOT(allScreenShots()));
 	} else {
-       //all pics proccesed now doing else
+       //all pics proccesed (cnt=maxpics) now doing else
        int retval;
+       QString temploc = QDir::tempPath();
        statusBar()->showMessage( "erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");
        //linux
-       retval = system("/usr/bin/convert -delay 5 -loop 0 /tmp/*.png /tmp/anim.gif");
+       string cmd = "/usr/bin/convert";
+       string param1 = "-delay 5";
+       string param2 = "-loop 0";
+       string in = temploc.toStdString()+"/*.png";
+       string out = temploc.toStdString()+"/anim.gif";
+       // system (cmd + param[1-n] + in + out)
+       retval = system( (cmd + " " + param1 + " " + param2 + " " + in + " " + out).c_str() );
        if (retval == 0) statusBar()->showMessage("Gif Datei erfolgreich erstellt");
        //reset counter
        cnt = 0;
