@@ -60,7 +60,8 @@
 using namespace std;
 
  void MainWindow::openFile(){
-     QString fileName = QFileDialog::getOpenFileName(this);
+     //http://www.java2s.com/Code/Cpp/Qt/Setfilterforopenfiledialog.htm
+     QString fileName = QFileDialog::getOpenFileName(this,tr("CSV Datei öffnen"), QDir::tempPath(), tr("comma separated values (*.csv);;"),0);
      //set to class member filename
      filename = fileName;
 
@@ -106,8 +107,8 @@ using namespace std;
     //db.read ("/home/rene/Documents/Projekte/informatik/stick/GLP/Einlesen.csv");
 	currentRow = 2;
 	cnt = 0;
-    maxpics = 30;
-    delay = 350;
+    maxpics = 358;
+    delay = 150;//250ms
     //######################################################
 
    setupPlayground(ui->customPlot);
@@ -389,16 +390,28 @@ void MainWindow::allScreenShots()
        int retval;
        QString temploc = QDir::tempPath();
        statusBar()->showMessage( "erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");
+
        //linux
        string cmd = "/usr/bin/convert";
-       string param1 = "-delay 5";
-       string param2 = "-loop 0";
-       string in = temploc.toStdString()+"/*.png";
+       string param1 = "-delay "; //gaps between images
+       string param2 = "-loop 0"; //replay gif
+       string in = temploc.toStdString()+"/"+"*.png";
        string out = temploc.toStdString()+"/anim.gif";
-       // system (cmd + param[1-n] + in + out)
-       retval = system( (cmd + " " + param1 + " " + param2 + " " + in + " " + out).c_str() );
-       if (retval == 0) statusBar()->showMessage("Gif Datei erfolgreich erstellt");
-       //reset counter
+       //divide by 10 in order to get value for convert
+       int res = delay / 10;
+       //http://superuser.com/questions/569924/why-is-the-gif-i-created-so-slow
+       //convert -delay * 10 = ms ... e.g. 100 is equal to 1s
+       QString s = QString::number(res);
+       string value = s.toStdString();
+
+       // calling system (cmd + param[1-n] + in + out)
+       retval = system( (cmd + " " + param1 + value + " " + param2 + " " + in + " " + out).c_str() );
+       if (retval == 0) {
+           statusBar()->showMessage("Gif Datei wurde erfolgreich erstellt");
+       } else {
+           statusBar()->showMessage("Gif Datei konnte leider nicht erstellt werden");
+       }
+        //reset counter
        cnt = 0;
-	}
+    }
 }

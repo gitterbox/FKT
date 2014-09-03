@@ -1,4 +1,5 @@
 #Todo
+	shortcuts menu
 	fix degree bug
 	create settings dialog
 	save settings in file 
