@@ -54,6 +54,9 @@
    <property name="text">
     <string>Öffnen</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="actionProgramm_beenden">
    <property name="text">
@@ -63,6 +66,9 @@
   <action name="actionGif_Datei_erstellen">
    <property name="text">
     <string>Gif Datei erstellen</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

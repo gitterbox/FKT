@@ -2,10 +2,14 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
+#include <QRegExpValidator>
+#include <QDebug>
+
 using namespace std;
 
 Database::Database()
 {
+    cnt = 0;
     cout << "db is alive" << endl;
 }
 
@@ -33,11 +37,21 @@ int Database::read(std::string path)
         if (lines.size() != 0) {
             cout << "lines is allready filled .. cleaning all data " << endl;
             lines.clear();
+            cnt=0;
         }
 
+        //s (line) begin with 3 or 2 or 1 number(s)
+        QRegExp rx("^[0-9]{1,3}.*");
+        QRegExpValidator v(rx, 0);
+        QString ss;
+        int pos=0;
+        QValidator::State line;
+
 		while (!aFile.eof()) {
-			getline(aFile, s);
-			lines.push_back(s);
+            getline(aFile, s);
+            ss = QString::fromStdString(s);
+            line = v.validate(ss, pos);
+            if (line==QValidator::Acceptable) lines.push_back(s);
 		}
 
 
@@ -72,12 +86,25 @@ double *Database::getLine2()
 	return vals;
 }
 
+int Database::getSize(){
+    return lines.size();
+}
+
+/*
+ * returns the current line number
+ * starts by 1
+ */
+int Database::getCurrentLine(){
+    return cnt;
+}
+
 double *Database::getLine(int lineNr)
 {
 	double *vals = new double[35];
-
+    cnt++;
+   // qDebug() << cnt;
 	string line_as_str;
-	line_as_str = lines.at(lineNr);
+    line_as_str = lines.at(lineNr-1);
 	//line_as_string lesen bis semikolon, wert in vals legen, und nächster
 	string delimiter = ";";
 

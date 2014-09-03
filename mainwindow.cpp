@@ -76,7 +76,7 @@ using namespace std;
          db.read(utf8_text);
          cout << utf8_text << endl;
          QString head("Datei ");
-         QString foot(" erfolgreich geladen");
+         QString foot(" erfolgreich geladen ("+QString::number(db.getSize())+ " Datensätze)");
          statusBar()->showMessage(head+fileName+foot);
      }
 
@@ -105,10 +105,10 @@ using namespace std;
     //######################################################
     cout << "4 dbread" << endl;
     //db.read ("/home/rene/Documents/Projekte/informatik/stick/GLP/Einlesen.csv");
-	currentRow = 2;
-	cnt = 0;
-    maxpics = 358;
-    delay = 150;//250ms
+    //cnt = 0;
+    currentRow = 0;
+    maxpics = 36;
+    delay = 500;//250ms
     //######################################################
 
    setupPlayground(ui->customPlot);
@@ -153,13 +153,13 @@ void MainWindow::plotData(int row)
 
 void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 {
-    currentRow++;
+    currentRow++; //if ++ = 1 and db does 1-1 vector.at(0)
 	double *values;
 	//values = db.getLine2();//randomdata
 	values = db.getLine(currentRow);
 	demoName = "GLP";
 	// generate some data:
-	int max = 30;
+    int max = 30;//one row has max values
 	//double step = 1/max;
 
 	QVector < double >x(max), y(max);	// initialize with entries 0..100
@@ -357,10 +357,10 @@ void MainWindow::allScreenShots()
 						       height() - 40);
 #endif
 
-    if (cnt < maxpics) {
-		cnt++;
+    if (db.getCurrentLine() < maxpics) {
+        //cnt++;
 		// QString fileName = demoName.toLower() + ".png";
-		QString scnt = QString::number(cnt);
+        QString scnt = QString::number(db.getCurrentLine());
 		int remain = 3 - scnt.length();
 		for (int i = 0; i < remain; i++)
 			scnt = "0" + scnt;
@@ -400,7 +400,7 @@ void MainWindow::allScreenShots()
        //divide by 10 in order to get value for convert
        int res = delay / 10;
        //http://superuser.com/questions/569924/why-is-the-gif-i-created-so-slow
-       //convert -delay * 10 = ms ... e.g. 100 is equal to 1s
+       //delay * 10 = ms ... e.g. 100 is equal to 1s
        QString s = QString::number(res);
        string value = s.toStdString();
 
@@ -412,6 +412,7 @@ void MainWindow::allScreenShots()
            statusBar()->showMessage("Gif Datei konnte leider nicht erstellt werden");
        }
         //reset counter
-       cnt = 0;
+       //cnt = 0;
+       currentRow = 0;
     }
 }

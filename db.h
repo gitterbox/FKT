@@ -11,11 +11,13 @@ class Database {
     double *getLine(int aLineNumber);
     double *getLine2();
     double randomNumber();
+    int getSize();
+    int getCurrentLine();
 
  private:
   //vector<string> *lines = new vector<string>;
   std::vector < std::string > lines;
-
+  int cnt;
 };
 
 #endif				// DB_H
