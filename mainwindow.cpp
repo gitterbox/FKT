@@ -38,6 +38,12 @@
 **  directory.                                                                                             **
 **                                                                                                         **
 *************************************************************************************************************/
+/*Global Todo
+**create Settings
+** linux branch
+** windows branch
+** autoinstaller with convert
+*/
 
 #include "mainwindow.h"
 //header file of mainwindow
@@ -83,12 +89,19 @@ using namespace std;
  }
 
  void::MainWindow::createGif(){
-    //ui->customPlot->
-    // for making screenshots of the current demo or all demos (for website screenshots):
-    QTimer::singleShot(2500, this, SLOT(allScreenShots()));
-    //QTimer::singleShot(1000, this, SLOT(screenShot()));
-    QString head(" ... erstelle GIF ...  ");
-    statusBar()->showMessage(filename+head);
+     if (db.getSize()==NULL){
+         statusBar()->showMessage("keine Datei geladen");
+     } else {
+         ui->customPlot->clearGraphs();
+         //preload first image
+         setupGLPDemo(ui->customPlot);
+         db.nextLine();
+        // for making screenshots of the current demo or all demos (for website screenshots):
+        QTimer::singleShot(2500, this, SLOT(allScreenShots()));
+        //QTimer::singleShot(1000, this, SLOT(screenShot()));
+        QString head(" ... erstelle Gif Datei ...");
+        statusBar()->showMessage(filename+head);
+     }
  }
 
  MainWindow::MainWindow(QWidget * parent):QMainWindow(parent), ui(new Ui::MainWindow)
@@ -103,12 +116,10 @@ using namespace std;
     connect( ui->actionGif_Datei_erstellen, SIGNAL(triggered(bool)), this, SLOT(createGif()));
 
     //######################################################
-    cout << "4 dbread" << endl;
-    //db.read ("/home/rene/Documents/Projekte/informatik/stick/GLP/Einlesen.csv");
-    //cnt = 0;
-    currentRow = 0;
-    maxpics = 36;
-    delay = 500;//250ms
+    qDebug() << "initialize StartLine, EndLine and Delay";
+    db.setStartLine(7);
+    db.setEndLine(9);
+    delay = 800;//250ms
     //######################################################
 
    setupPlayground(ui->customPlot);
@@ -153,10 +164,9 @@ void MainWindow::plotData(int row)
 
 void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 {
-    currentRow++; //if ++ = 1 and db does 1-1 vector.at(0)
 	double *values;
 	//values = db.getLine2();//randomdata
-	values = db.getLine(currentRow);
+    values = db.getLine();
 	demoName = "GLP";
 	// generate some data:
     int max = 30;//one row has max values
@@ -348,19 +358,21 @@ void MainWindow::allScreenShots()
 				this->frameGeometry().width() - 90,
 				this->frameGeometry().height() - 90);
 #else
+    //b2
 	QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(),
-						       this->x() + 2,
-						       this->y() + 25,
+                               this->x() + 3,//left
+                               this->y() + 51,//top
 						       this->frameGeometry().
-						       width() - 4,
+                               width() - 7, //right
 						       this->frameGeometry().
-						       height() - 40);
+                               height() - 83);//bottom
 #endif
 
-    if (db.getCurrentLine() < maxpics) {
-        //cnt++;
-		// QString fileName = demoName.toLower() + ".png";
+    if (db.getCurrentLine() <= db.getEndLine()) {
+
         QString scnt = QString::number(db.getCurrentLine());
+
+        //fileName prefix 0(0) in order to have ordinary image names
 		int remain = 3 - scnt.length();
 		for (int i = 0; i < remain; i++)
 			scnt = "0" + scnt;
@@ -369,7 +381,6 @@ void MainWindow::allScreenShots()
 		fileName.replace(" ", "");
 
         //Todo: filename to settings
-        //QString path = QStandardPaths::TempLocation+"/"+fileName;
         QString temploc = QDir::tempPath();
         pm.save(temploc+"/"+fileName);
         //if (currentRow < 10){
@@ -379,12 +390,11 @@ void MainWindow::allScreenShots()
 		delete ui->customPlot;
 		ui->customPlot = new QCustomPlot(ui->centralWidget);
 		ui->verticalLayout->addWidget(ui->customPlot);
-		//plotData(currentRow+1);
 		setupGLPDemo(ui->customPlot);
-		//setupDemo(currentDemoIndex + 1);
 		// setup delay for demos that need time to develop proper look:
         statusBar()->showMessage("erstelle Bilddatei "+fileName);
         QTimer::singleShot(delay, this, SLOT(allScreenShots()));
+       db.nextLine();
 	} else {
        //all pics proccesed (cnt=maxpics) now doing else
        int retval;
@@ -411,8 +421,8 @@ void MainWindow::allScreenShots()
        } else {
            statusBar()->showMessage("Gif Datei konnte leider nicht erstellt werden");
        }
-        //reset counter
+       //reset counter
        //cnt = 0;
-       currentRow = 0;
+       db.reset();
     }
 }

@@ -9,7 +9,10 @@ using namespace std;
 
 Database::Database()
 {
-    cnt = 0;
+    //default values
+    sLine = 1; n = sLine;
+    eLine = 360;
+
     cout << "db is alive" << endl;
 }
 
@@ -37,10 +40,10 @@ int Database::read(std::string path)
         if (lines.size() != 0) {
             cout << "lines is allready filled .. cleaning all data " << endl;
             lines.clear();
-            cnt=0;
+            reset();
         }
 
-        //s (line) begin with 3 or 2 or 1 number(s)
+        //s (line) starts with 3 or 2 or 1 digit(s)
         QRegExp rx("^[0-9]{1,3}.*");
         QRegExpValidator v(rx, 0);
         QString ss;
@@ -92,23 +95,22 @@ int Database::getSize(){
 
 /*
  * returns the current line number
- * starts by 1
  */
 int Database::getCurrentLine(){
-    return cnt;
+    return n;
 }
 
-double *Database::getLine(int lineNr)
+double *Database::getLine()
 {
 	double *vals = new double[35];
-    cnt++;
-   // qDebug() << cnt;
 	string line_as_str;
-    line_as_str = lines.at(lineNr-1);
+    // 0 | 1°;;..
+    // 1 | 2°;;
+    line_as_str = lines.at(n-1);
 	//line_as_string lesen bis semikolon, wert in vals legen, und nächster
 	string delimiter = ";";
 
-//    for (int i = 0; i < zeilen.size(); i++) {
+    //    for (int i = 0; i < zeilen.size(); i++) {
 	int pos = 0;
 	int start = 0;
 	int size = 0;
@@ -130,9 +132,36 @@ double *Database::getLine(int lineNr)
 		//refresh size
 		size = line_as_str.size();
 
-	}			//while
+    }	//while
 
-////        }//for
+        return vals;
 
-	return vals;
+
+
+}
+
+void Database::nextLine(){
+    n++;
+}
+
+void Database::setStartLine(int aLine){
+    sLine = aLine;
+    n = sLine;
+}
+
+int Database::getStartLine(){
+    return sLine;
+}
+
+void Database::setEndLine(int aLine){
+    eLine = aLine;
+}
+
+int Database::getEndLine(){
+    return eLine;
+}
+
+void Database::reset(){
+    //reset n to startLine
+    n = sLine;
 }

@@ -8,16 +8,26 @@ class Database {
 	Database();
 	~Database();
     int read(std::string path);
-    double *getLine(int aLineNumber);
+    double *getLine();
     double *getLine2();
     double randomNumber();
     int getSize();
     int getCurrentLine();
 
+    void setStartLine(int);
+    int getStartLine();
+    void setEndLine(int);
+    int getEndLine();
+    void reset();
+    void nextLine();
+
+
  private:
   //vector<string> *lines = new vector<string>;
   std::vector < std::string > lines;
-  int cnt;
+  int n;
+  int sLine;
+  int eLine;
 };
 
 #endif				// DB_H
