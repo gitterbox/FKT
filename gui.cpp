@@ -8,8 +8,9 @@
 
 using namespace std;
 
-Gui::Gui(){
-    cout << "new Gui" << endl;
+Gui::Gui()
+{
+	cout << "new Gui" << endl;
 }
 
 Gui::~Gui()

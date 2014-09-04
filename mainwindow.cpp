@@ -65,64 +65,77 @@
 
 using namespace std;
 
- void MainWindow::openFile(){
-     //http://www.java2s.com/Code/Cpp/Qt/Setfilterforopenfiledialog.htm
-     QString fileName = QFileDialog::getOpenFileName(this,tr("CSV Datei öffnen"), QDir::tempPath(), tr("comma separated values (*.csv);;"),0);
-     //set to class member filename
-     filename = fileName;
-
-     QFile file(fileName);
-     if (file.open(QIODevice::ReadOnly|QIODevice::Text)){
-
-         //http://stackoverflow.com/questions/11191762/qt-qstring-to-stdstring
-         //linux
-         std::string utf8_text = fileName.toUtf8().constData();
-         // or this if you on Windows :-)
-         //std::string current_locale_text = qs.toLocal8Bit().constData();
-         db.read(utf8_text);
-         cout << utf8_text << endl;
-         QString head("Datei ");
-         QString foot(" erfolgreich geladen ("+QString::number(db.getSize())+ " Datensätze)");
-         statusBar()->showMessage(head+fileName+foot);
-     }
-
- }
-
- void::MainWindow::createGif(){
-     if (db.getSize()==NULL){
-         statusBar()->showMessage("keine Datei geladen");
-     } else {
-         ui->customPlot->clearGraphs();
-         //preload first image
-         setupGLPDemo(ui->customPlot);
-         db.nextLine();
-        // for making screenshots of the current demo or all demos (for website screenshots):
-        QTimer::singleShot(2500, this, SLOT(allScreenShots()));
-        //QTimer::singleShot(1000, this, SLOT(screenShot()));
-        QString head(" ... erstelle Gif Datei ...");
-        statusBar()->showMessage(filename+head);
-     }
- }
-
- MainWindow::MainWindow(QWidget * parent):QMainWindow(parent), ui(new Ui::MainWindow)
+void MainWindow::openFile()
 {
-    //calls setupUi method of mainwindow
-    ui->setupUi(this);
-    //sets some geometry
-    setGeometry(400, 250, 842, 390);
-    //sets ui action for openFile
-    connect( ui->actionOeffnen, SIGNAL(triggered(bool)), this, SLOT(openFile()));
-    //sets ui action for createGif
-    connect( ui->actionGif_Datei_erstellen, SIGNAL(triggered(bool)), this, SLOT(createGif()));
+	//http://www.java2s.com/Code/Cpp/Qt/Setfilterforopenfiledialog.htm
+	QString fileName =
+	    QFileDialog::getOpenFileName(this, tr("CSV Datei öffnen"),
+					 QDir::tempPath(),
+					 tr("comma separated values (*.csv);;"),
+					 0);
+	//set to class member filename
+	filename = fileName;
 
-    //######################################################
+	QFile file(fileName);
+	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+
+		//http://stackoverflow.com/questions/11191762/qt-qstring-to-stdstring
+		//linux
+		std::string utf8_text = fileName.toUtf8().constData();
+		// or this if you on Windows :-)
+		//std::string current_locale_text = qs.toLocal8Bit().constData();
+		db.read(utf8_text);
+		cout << utf8_text << endl;
+		QString head("Datei ");
+		QString foot(" erfolgreich geladen (" +
+			     QString::number(db.getSize()) + " Datensätze)");
+		statusBar()->showMessage(head + fileName + foot);
+	}
+
+}
+
+void::MainWindow::createGif()
+{
+	if (db.getSize() == NULL) {
+		statusBar()->showMessage("keine Datei geladen");
+	} else {
+		ui->customPlot->clearGraphs();
+		//preload first image
+		setupGLPDemo(ui->customPlot);
+		db.nextLine();
+		// for making screenshots of the current demo or all demos (for website screenshots):
+		QTimer::singleShot(2500, this, SLOT(allScreenShots()));
+		//QTimer::singleShot(1000, this, SLOT(screenShot()));
+		QString head(" ... erstelle Gif Datei ...");
+		statusBar()->showMessage(filename + head);
+	}
+}
+
+ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
+ui(new Ui::MainWindow)
+{
+	//calls setupUi method of mainwindow
+	ui->setupUi(this);
+	//sets some geometry
+	setGeometry(400, 250, 842, 390);
+	//sets ui action for openFile
+	connect(ui->actionOeffnen, SIGNAL(triggered(bool)), this,
+		SLOT(openFile()));
+	//sets ui action for createGif
+	connect(ui->actionGif_Datei_erstellen, SIGNAL(triggered(bool)), this,
+		SLOT(createGif()));
+    //sets ui cation for editing delay
+    connect(ui->actionDelay_erh_hen, SIGNAL(triggered(bool)), this, SLOT(increaseDelay()));
+    connect(ui->actionDelay_veringern, SIGNAL(triggered(bool)), this, SLOT(decreaseDelay()));
+
+	//######################################################
     qDebug() << "initialize StartLine, EndLine and Delay";
-    //db.setStartLine(1);
-    //db.setEndLine(9);
-    delay = 80;//250ms
-    //######################################################
+	//db.setStartLine(1);
+	//db.setEndLine(9);
+    delay = 80;		//250ms
+	//######################################################
 
-   setupPlayground(ui->customPlot);
+	setupPlayground(ui->customPlot);
 }
 
 void MainWindow::setupDemo(int demoIndex)
@@ -152,10 +165,9 @@ void MainWindow::setupDemo(int demoIndex)
 	setWindowTitle("QCustomPlot: " + demoName);
 	statusBar()->clearMessage();
 	currentDemoIndex = demoIndex;
-    //b1
-    //ui->customPlot->replot();
+	//b1
+	//ui->customPlot->replot();
 }
-
 
 //not used yet
 void MainWindow::plotData(int row)
@@ -166,11 +178,11 @@ void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 {
 	double *values;
 	//values = db.getLine2();//randomdata
-    values = db.getLine();
-    currentAngle = values[0];
+	values = db.getLine();
+	currentAngle = values[0];
 	demoName = "GLP";
 	// generate some data:
-    int max = 30;//one row has max values
+	int max = 30;		//one row has max values
 	//double step = 1/max;
 
 	QVector < double >x(max), y(max);	// initialize with entries 0..100
@@ -190,16 +202,15 @@ void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 		     (sin(i * 1 + 1.2) * 80 + 80, sin(i * 0.3 + 0) * 80 + 80,
 		      sin(i * 0.3 + 1.5) * 80 + 80));
 	customPlot->graph()->setLineStyle(QCPGraph::lsNone);
-	customPlot->
-	    graph()->setScatterStyle(QCPScatterStyle
-				     (QCPScatterStyle::ssCircle, 9));
+	customPlot->graph()->setScatterStyle(QCPScatterStyle
+					     (QCPScatterStyle::ssCircle, 9));
 
 	customPlot->graph()->setData(x, y);
 	// give the axes some labels:
-    QString valueAsString = QString::number(currentAngle);
+	QString valueAsString = QString::number(currentAngle);
 	const QString xax = "x-Achse | " + valueAsString + " Grad";
 	//string xlabel = "x "<<values[0]<<" Grad"
-    customPlot->xAxis->setLabel(xax);
+	customPlot->xAxis->setLabel(xax);
 	customPlot->yAxis->setLabel("y-Achse");
 	// set axes ranges, so we see all data:
 	customPlot->xAxis->setRange(-1, 1);
@@ -210,9 +221,8 @@ void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 	//del memory of pointer (double[])
 	delete[]values;
 
-    ui->customPlot->replot();
+	ui->customPlot->replot();
 }
-
 
 //not used yet
 void MainWindow::realtimeDataSlot()
@@ -258,10 +268,10 @@ void MainWindow::realtimeDataSlot()
 					   ("%1 FPS, Total Data points: %2")
 					   .arg(frameCount / (key - lastFpsKey),
 						0, 'f', 0)
-					   .arg(ui->customPlot->graph(0)->
-						data()->count() +
-						ui->customPlot->graph(1)->
-						data()->count())
+					   .arg(ui->customPlot->
+						graph(0)->data()->count() +
+						ui->customPlot->
+						graph(1)->data()->count())
 					   , 0);
 		lastFpsKey = key;
 		frameCount = 0;
@@ -305,8 +315,8 @@ void MainWindow::bracketDataSlot()
 					   ("%1 FPS, Total Data points: %2")
 					   .arg(frameCount / (key - lastFpsKey),
 						0, 'f', 0)
-					   .arg(ui->customPlot->graph(0)->
-						data()->count())
+					   .arg(ui->customPlot->
+						graph(0)->data()->count())
 					   , 0);
 		lastFpsKey = key;
 		frameCount = 0;
@@ -335,59 +345,77 @@ void MainWindow::screenShot()
 	QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(),
 						       this->x() + 2,
 						       this->y() + 2,
-						       this->frameGeometry().
-						       width() - 4,
-						       this->frameGeometry().
-						       height() - 4);
+						       this->
+						       frameGeometry().width() -
+						       4,
+						       this->
+						       frameGeometry().height()
+						       - 4);
 	//QPixmap pm2 = qApp->primaryScreen()->grabWindow(
 
 #endif
 
-    QString fileName = demoName.toLower() + ".png";
+	QString fileName = demoName.toLower() + ".png";
 	fileName.replace(" ", "");
-    //pm.save( QDesktopServices::storageLocation( QDesktopServices::TempLocation ).toStdString()+"/qt/" + fileName);
-    pm.save( ( QStandardPaths::TempLocation )+"/qt/" + fileName);
-    qApp->quit();
+	//pm.save( QDesktopServices::storageLocation( QDesktopServices::TempLocation ).toStdString()+"/qt/" + fileName);
+	pm.save((QStandardPaths::TempLocation) + "/qt/" + fileName);
+	qApp->quit();
 }
-void MainWindow::grabWindow(){
+
+void MainWindow::increaseDelay(){
+   int max=2000;
+   int inc=10;
+   if (delay+inc<max)
+      delay+=inc;
+  statusBar()->showMessage("Delay ist: "+QString::number(delay)+" ms");
+}
+
+void MainWindow::decreaseDelay(){
+   int min=50;
+   int inc=10;
+   if (delay-inc>min)
+      delay-=inc;
+  statusBar()->showMessage("Delay ist: "+QString::number(delay)+" ms");
+}
+
+void MainWindow::grabWindow()
+{
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QPixmap pm =
-        QPixmap::grabWindow(qApp->desktop()->winId(), this->x() + 20,
-                this->y() + 20,
-                this->frameGeometry().width() - 90,
-                this->frameGeometry().height() - 90);
+	QPixmap pm =
+	    QPixmap::grabWindow(qApp->desktop()->winId(), this->x() + 20,
+				this->y() + 20,
+				this->frameGeometry().width() - 90,
+				this->frameGeometry().height() - 90);
 #else
-    //b2
-    QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(),
-                               this->x() + 3,//left
-                               this->y() + 51,//top
-                               this->frameGeometry().
-                               width() - 7, //right
-                               this->frameGeometry().
-                               height() - 83);//bottom
+	//b2
+	QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(),
+						       this->x() + 3,	//left
+						       this->y() + 51,	//top
+						       this->frameGeometry().width() - 7,	//right
+						       this->frameGeometry().height() - 83);	//bottom
 #endif
-QString scnt = QString::number(currentAngle);
+	QString scnt = QString::number(currentAngle);
 
-        //fileName prefix 0(0) in order to have ordinary image names
-        int remain = 3 - scnt.length();
-        for (int i = 0; i < remain; i++)
-            scnt = "0" + scnt;
+	//fileName prefix 0(0) in order to have ordinary image names
+	int remain = 3 - scnt.length();
+	for (int i = 0; i < remain; i++)
+		scnt = "0" + scnt;
 
-        QString fileName = scnt + ".png";
-        fileName.replace(" ", "");
+	QString fileName = scnt + ".png";
+	fileName.replace(" ", "");
 
-        //Todo: filename to settings
-        QString temploc = QDir::tempPath();
-        pm.save(temploc+"/"+fileName);
+	//Todo: filename to settings
+	QString temploc = QDir::tempPath();
+	pm.save(temploc + "/" + fileName);
 
 }
 
 void MainWindow::allScreenShots()
 {
-    if (currentAngle < db.getEndLine()) {
-        grabWindow();
-                //if (currentRow < 10){
+	if (currentAngle < db.getEndLine()) {
+		grabWindow();
+		//if (currentRow < 10){
 		if (dataTimer.isActive())
 			dataTimer.stop();
 		dataTimer.disconnect();
@@ -396,40 +424,47 @@ void MainWindow::allScreenShots()
 		ui->verticalLayout->addWidget(ui->customPlot);
 		setupGLPDemo(ui->customPlot);
 		// setup delay for demos that need time to develop proper look:
-        statusBar()->showMessage("erstelle Bilddatei ...");
-        QTimer::singleShot(delay, this, SLOT(allScreenShots()));
-        //if (currentAngle!=db.getEndLine())
-            db.nextLine();
+        statusBar()->showMessage("erstelle Bilddateien ...");
+		QTimer::singleShot(delay, this, SLOT(allScreenShots()));
+		//if (currentAngle!=db.getEndLine())
+		db.nextLine();
 	} else {
-       //all pics proccesed (cnt=maxpics) now doing else
-       //save last Window
-       grabWindow();
-       int retval;
-       QString temploc = QDir::tempPath();
-       statusBar()->showMessage( "erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");
+		//all pics proccesed (cnt=maxpics) now doing else
+		//save last Window
+		grabWindow();
+		int retval;
+		QString temploc = QDir::tempPath();
+		statusBar()->
+		    showMessage
+		    ("erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");
 
-       //linux
-       string cmd = "/usr/bin/convert";
-       string param1 = "-delay "; //gaps between images
-       string param2 = "-loop 0"; //replay gif
-       string in = temploc.toStdString()+"/"+"*.png";
-       string out = temploc.toStdString()+"/anim.gif";
-       //divide by 10 in order to get value for convert
-       int res = delay / 10;
-       //http://superuser.com/questions/569924/why-is-the-gif-i-created-so-slow
-       //delay * 10 = ms ... e.g. 100 is equal to 1s
-       QString s = QString::number(res);
-       string value = s.toStdString();
+		//linux
+		string cmd = "/usr/bin/convert";
+		string param1 = "-delay ";	//gaps between images
+		string param2 = "-loop 0";	//replay gif
+		string in = temploc.toStdString() + "/" + "*.png";
+		string out = temploc.toStdString() + "/anim.gif";
+		//divide by 10 in order to get value for convert
+		int res = delay / 10;
+		//http://superuser.com/questions/569924/why-is-the-gif-i-created-so-slow
+		//delay * 10 = ms ... e.g. 100 is equal to 1s
+		QString s = QString::number(res);
+		string value = s.toStdString();
 
-       // calling system (cmd + param[1-n] + in + out)
-       retval = system( (cmd + " " + param1 + value + " " + param2 + " " + in + " " + out).c_str() );
-       if (retval == 0) {
-           statusBar()->showMessage("Gif Datei wurde erfolgreich erstellt");
-       } else {
-           statusBar()->showMessage("Gif Datei konnte leider nicht erstellt werden");
-       }
-       //reset counter
-       //cnt = 0;
-       db.reset();
-    }
+		// calling system (cmd + param[1-n] + in + out)
+		retval =
+		    system((cmd + " " + param1 + value + " " + param2 + " " +
+			    in + " " + out).c_str());
+		if (retval == 0) {
+			statusBar()->
+			    showMessage("Gif Datei wurde erfolgreich erstellt");
+		} else {
+			statusBar()->
+			    showMessage
+			    ("Gif Datei konnte leider nicht erstellt werden");
+		}
+		//reset counter
+		//cnt = 0;
+		db.reset();
+	}
 }

@@ -32,10 +32,10 @@ int main(int argc, char *argv[])
 	QApplication::setGraphicsSystem("raster");
 #endif
 
-    QApplication app(argc, argv);
+	QApplication app(argc, argv);
 
-    MainWindow w;
-    w.show();
+	MainWindow w;
+	w.show();
 
-    return app.exec();
+	return app.exec();
 }

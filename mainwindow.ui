@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>548</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="statusTip">
@@ -46,6 +46,10 @@
      <string>GLP</string>
     </property>
     <addaction name="actionGif_Datei_erstellen"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="actionDelay_erh_hen"/>
+    <addaction name="actionDelay_veringern"/>
    </widget>
    <addaction name="Datei"/>
    <addaction name="menuGLP"/>
@@ -69,6 +73,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionDelay_erh_hen">
+   <property name="text">
+    <string>Delay erhöhen</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionDelay_veringern">
+   <property name="text">
+    <string>Delay veringern</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>

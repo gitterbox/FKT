@@ -85,6 +85,8 @@ namespace Ui {
 	void allScreenShots();
     void openFile();
     void createGif();
+    void increaseDelay();
+    void decreaseDelay();
 
  private:
 	 Ui::MainWindow * ui;

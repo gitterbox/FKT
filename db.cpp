@@ -9,11 +9,11 @@ using namespace std;
 
 Database::Database()
 {
-    //default values
-    setStartLine(1);
-    setEndLine(360);
+	//default values
+	setStartLine(1);
+	setEndLine(360);
 
-    cout << "db is alive" << endl;
+	cout << "db is alive" << endl;
 }
 
 Database::~Database()
@@ -24,56 +24,53 @@ Database::~Database()
 int Database::read(std::string path)
 {
 
-		//inputfilestream
-		std::ifstream aFile;
+	//inputfilestream
+	std::ifstream aFile;
 
-		aFile.open(path.c_str(), ios_base::in);
+	aFile.open(path.c_str(), ios_base::in);
 
-		if (!aFile) {
-			cerr << "Error while open:" << path << endl;
-			return -1;
-		}
-		//vector<string> lines;
-		string s;
+	if (!aFile) {
+		cerr << "Error while open:" << path << endl;
+		return -1;
+	}
+	//vector<string> lines;
+	string s;
 
+	if (lines.size() != 0) {
+		cout << "lines is allready filled .. cleaning all data " <<
+		    endl;
+		lines.clear();
+		reset();
+	}
+	//s (line) starts with 3 or 2 or 1 digit(s)
+	QRegExp rx("^[0-9]{1,3}.*");
+	QRegExpValidator v(rx, 0);
+	QString ss;
+	int pos = 0;
+	QValidator::State line;
 
-        if (lines.size() != 0) {
-            cout << "lines is allready filled .. cleaning all data " << endl;
-            lines.clear();
-            reset();
-        }
+	while (!aFile.eof()) {
+		getline(aFile, s);
+		ss = QString::fromStdString(s);
+		line = v.validate(ss, pos);
+		if (line == QValidator::Acceptable)
+			lines.push_back(s);
+	}
 
-        //s (line) starts with 3 or 2 or 1 digit(s)
-        QRegExp rx("^[0-9]{1,3}.*");
-        QRegExpValidator v(rx, 0);
-        QString ss;
-        int pos=0;
-        QValidator::State line;
+	//Debug
+	//for (int i = 0; i < 5 && i < lines.size(); ++i)
+	//cout << "##" << lines.at(i) << "##" << endl;
 
-		while (!aFile.eof()) {
-            getline(aFile, s);
-            ss = QString::fromStdString(s);
-            line = v.validate(ss, pos);
-            if (line==QValidator::Acceptable) lines.push_back(s);
-		}
+	cout << "lines is filled up" << endl;
+	aFile.close();
 
-
-        //Debug
-        //for (int i = 0; i < 5 && i < lines.size(); ++i)
-        //cout << "##" << lines.at(i) << "##" << endl;
-
-		cout << "lines is filled up" << endl;
-		aFile.close();
-
-
-        // naive check ;-)
-        if (lines.size() > 0) {
-            return 0;
-        } else {
-            return -1;
-        }
+	// naive check ;-)
+	if (lines.size() > 0) {
+		return 0;
+	} else {
+		return -1;
+	}
 }
-
 
 double Database::randomNumber()
 {
@@ -91,31 +88,32 @@ double *Database::getLine2()
 	return vals;
 }
 
-int Database::getSize(){
-    return lines.size();
+int Database::getSize()
+{
+	return lines.size();
 }
 
 /*
  * returns the current line number
  */
-int Database::getCurrentLine(){
-    return n;
+int Database::getCurrentLine()
+{
+	return n;
 }
 
 double *Database::getLine()
 {
 	double *vals = new double[35];
 	string line_as_str;
-    // vec|deg
-    // 0  | 1°;;..
-    // 1  | 2°;;
-    line_as_str = lines.at(n-1);
+	// vec|deg
+	// 0  | 1°;;..
+	// 1  | 2°;;
+	line_as_str = lines.at(n - 1);
 
-
-        //line_as_string lesen bis semikolon, wert in vals legen, und nächster
+	//line_as_string lesen bis semikolon, wert in vals legen, und nächster
 	string delimiter = ";";
 
-    //    for (int i = 0; i < zeilen.size(); i++) {
+	//    for (int i = 0; i < zeilen.size(); i++) {
 	int pos = 0;
 	int start = 0;
 	int size = 0;
@@ -137,36 +135,40 @@ double *Database::getLine()
 		//refresh size
 		size = line_as_str.size();
 
-    }	//while
+	}			//while
 
-  return vals;
-
-
+	return vals;
 
 }
 
-void Database::nextLine(){
-    n++;
+void Database::nextLine()
+{
+	n++;
 }
 
-void Database::setStartLine(int aLine){
-    sLine = aLine;
-    n = sLine;
+void Database::setStartLine(int aLine)
+{
+	sLine = aLine;
+	n = sLine;
 }
 
-int Database::getStartLine(){
-    return sLine;
+int Database::getStartLine()
+{
+	return sLine;
 }
 
-void Database::setEndLine(int aLine){
-    eLine = aLine;
+void Database::setEndLine(int aLine)
+{
+	eLine = aLine;
 }
 
-int Database::getEndLine(){
-    return eLine;
+int Database::getEndLine()
+{
+	return eLine;
 }
 
-void Database::reset(){
-    //reset n to given startLine
-    n = sLine;
+void Database::reset()
+{
+	//reset n to given startLine
+	n = sLine;
 }
