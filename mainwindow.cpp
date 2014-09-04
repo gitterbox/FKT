@@ -117,9 +117,9 @@ using namespace std;
 
     //######################################################
     qDebug() << "initialize StartLine, EndLine and Delay";
-    db.setStartLine(7);
-    db.setEndLine(9);
-    delay = 800;//250ms
+    //db.setStartLine(1);
+    //db.setEndLine(9);
+    delay = 80;//250ms
     //######################################################
 
    setupPlayground(ui->customPlot);
@@ -167,6 +167,7 @@ void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 	double *values;
 	//values = db.getLine2();//randomdata
     values = db.getLine();
+    currentAngle = values[0];
 	demoName = "GLP";
 	// generate some data:
     int max = 30;//one row has max values
@@ -195,10 +196,10 @@ void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 
 	customPlot->graph()->setData(x, y);
 	// give the axes some labels:
-	QString valueAsString = QString::number(values[0]);
+    QString valueAsString = QString::number(currentAngle);
 	const QString xax = "x-Achse | " + valueAsString + " Grad";
 	//string xlabel = "x "<<values[0]<<" Grad"
-	customPlot->xAxis->setLabel(xax);
+    customPlot->xAxis->setLabel(xax);
 	customPlot->yAxis->setLabel("y-Achse");
 	// set axes ranges, so we see all data:
 	customPlot->xAxis->setRange(-1, 1);
@@ -348,42 +349,45 @@ void MainWindow::screenShot()
     pm.save( ( QStandardPaths::TempLocation )+"/qt/" + fileName);
     qApp->quit();
 }
+void MainWindow::grabWindow(){
 
-void MainWindow::allScreenShots()
-{
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-	QPixmap pm =
-	    QPixmap::grabWindow(qApp->desktop()->winId(), this->x() + 20,
-				this->y() + 20,
-				this->frameGeometry().width() - 90,
-				this->frameGeometry().height() - 90);
+    QPixmap pm =
+        QPixmap::grabWindow(qApp->desktop()->winId(), this->x() + 20,
+                this->y() + 20,
+                this->frameGeometry().width() - 90,
+                this->frameGeometry().height() - 90);
 #else
     //b2
-	QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(),
+    QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(),
                                this->x() + 3,//left
                                this->y() + 51,//top
-						       this->frameGeometry().
+                               this->frameGeometry().
                                width() - 7, //right
-						       this->frameGeometry().
+                               this->frameGeometry().
                                height() - 83);//bottom
 #endif
-
-    if (db.getCurrentLine() <= db.getEndLine()) {
-
-        QString scnt = QString::number(db.getCurrentLine());
+QString scnt = QString::number(currentAngle);
 
         //fileName prefix 0(0) in order to have ordinary image names
-		int remain = 3 - scnt.length();
-		for (int i = 0; i < remain; i++)
-			scnt = "0" + scnt;
+        int remain = 3 - scnt.length();
+        for (int i = 0; i < remain; i++)
+            scnt = "0" + scnt;
 
-		QString fileName = scnt + ".png";
-		fileName.replace(" ", "");
+        QString fileName = scnt + ".png";
+        fileName.replace(" ", "");
 
         //Todo: filename to settings
         QString temploc = QDir::tempPath();
         pm.save(temploc+"/"+fileName);
-        //if (currentRow < 10){
+
+}
+
+void MainWindow::allScreenShots()
+{
+    if (currentAngle < db.getEndLine()) {
+        grabWindow();
+                //if (currentRow < 10){
 		if (dataTimer.isActive())
 			dataTimer.stop();
 		dataTimer.disconnect();
@@ -392,11 +396,14 @@ void MainWindow::allScreenShots()
 		ui->verticalLayout->addWidget(ui->customPlot);
 		setupGLPDemo(ui->customPlot);
 		// setup delay for demos that need time to develop proper look:
-        statusBar()->showMessage("erstelle Bilddatei "+fileName);
+        statusBar()->showMessage("erstelle Bilddatei ...");
         QTimer::singleShot(delay, this, SLOT(allScreenShots()));
-       db.nextLine();
+        //if (currentAngle!=db.getEndLine())
+            db.nextLine();
 	} else {
        //all pics proccesed (cnt=maxpics) now doing else
+       //save last Window
+       grabWindow();
        int retval;
        QString temploc = QDir::tempPath();
        statusBar()->showMessage( "erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");

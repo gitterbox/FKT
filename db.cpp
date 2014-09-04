@@ -10,8 +10,8 @@ using namespace std;
 Database::Database()
 {
     //default values
-    sLine = 1; n = sLine;
-    eLine = 360;
+    setStartLine(1);
+    setEndLine(360);
 
     cout << "db is alive" << endl;
 }
@@ -65,6 +65,7 @@ int Database::read(std::string path)
 		cout << "lines is filled up" << endl;
 		aFile.close();
 
+
         // naive check ;-)
         if (lines.size() > 0) {
             return 0;
@@ -72,6 +73,7 @@ int Database::read(std::string path)
             return -1;
         }
 }
+
 
 double Database::randomNumber()
 {
@@ -104,10 +106,13 @@ double *Database::getLine()
 {
 	double *vals = new double[35];
 	string line_as_str;
-    // 0 | 1°;;..
-    // 1 | 2°;;
+    // vec|deg
+    // 0  | 1°;;..
+    // 1  | 2°;;
     line_as_str = lines.at(n-1);
-	//line_as_string lesen bis semikolon, wert in vals legen, und nächster
+
+
+        //line_as_string lesen bis semikolon, wert in vals legen, und nächster
 	string delimiter = ";";
 
     //    for (int i = 0; i < zeilen.size(); i++) {
@@ -134,7 +139,7 @@ double *Database::getLine()
 
     }	//while
 
-        return vals;
+  return vals;
 
 
 
@@ -162,6 +167,6 @@ int Database::getEndLine(){
 }
 
 void Database::reset(){
-    //reset n to startLine
+    //reset n to given startLine
     n = sLine;
 }

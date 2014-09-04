@@ -54,7 +54,7 @@ namespace Ui {
  Q_OBJECT public:
 	explicit MainWindow(QWidget * parent = 0);
 	~MainWindow();
-
+    void grabWindow();
     void plotData(int row);
 	void setupDemo(int demoIndex);
     //void setupQuadraticDemo(QCustomPlot * customPlot);
@@ -99,6 +99,7 @@ namespace Ui {
     int cnt;
     int maxpics;
     int delay;
+    int currentAngle;
     QString filename;
 };
 
