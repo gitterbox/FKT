@@ -11,7 +11,8 @@ Database::Database()
 {
 	//default values
 	setStartLine(1);
-	setEndLine(360);
+  //Todo: set Endline automatically           to lines.size
+    setEndLine(360);
 
 	cout << "db is alive" << endl;
 }

@@ -62,6 +62,8 @@
 
 //Default Storage Locations depending on os e.g. /tmp vs. c:/.../temp
 #include <QStandardPaths>
+//saving some values e.g. delay
+#include <QSettings>
 
 using namespace std;
 
@@ -111,13 +113,36 @@ void::MainWindow::createGif()
 	}
 }
 
+void MainWindow::saveSettings(){
+   QSettings setting("myApp","mysettting");
+   setting.beginGroup("MainWindows");
+        setting.setValue("delay",delay);
+        setting.setValue("position",this->geometry());
+   setting.endGroup();
+
+   qDebug() << "Saved";
+}
+
+void MainWindow::loadSettings(){
+   QSettings setting("myApp","mysettting");
+   setting.beginGroup("MainWindows");
+        QRect geo = setting.value("position").toRect();
+            setGeometry(geo);
+        delay = setting.value("delay").toInt();
+   setting.endGroup();
+
+   qDebug() << "Loaded";
+}
+
+
  MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
 ui(new Ui::MainWindow)
 {
 	//calls setupUi method of mainwindow
 	ui->setupUi(this);
 	//sets some geometry
-	setGeometry(400, 250, 842, 390);
+    setGeometry(400, 250, 842, 390);
+    //setFixedSize();
 	//sets ui action for openFile
 	connect(ui->actionOeffnen, SIGNAL(triggered(bool)), this,
 		SLOT(openFile()));
@@ -130,9 +155,11 @@ ui(new Ui::MainWindow)
 
 	//######################################################
     qDebug() << "initialize StartLine, EndLine and Delay";
-	//db.setStartLine(1);
-	//db.setEndLine(9);
-    delay = 80;		//250ms
+    db.setStartLine(1);
+    db.setEndLine(10);
+    //default in ms
+    delay = 80;
+    loadSettings();
 	//######################################################
 
 	setupPlayground(ui->customPlot);
@@ -368,6 +395,7 @@ void MainWindow::increaseDelay(){
    if (delay+inc<max)
       delay+=inc;
   statusBar()->showMessage("Delay ist: "+QString::number(delay)+" ms");
+  saveSettings();
 }
 
 void MainWindow::decreaseDelay(){
@@ -376,6 +404,7 @@ void MainWindow::decreaseDelay(){
    if (delay-inc>min)
       delay-=inc;
   statusBar()->showMessage("Delay ist: "+QString::number(delay)+" ms");
+  saveSettings();
 }
 
 void MainWindow::grabWindow()

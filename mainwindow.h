@@ -55,6 +55,10 @@ namespace Ui {
 	explicit MainWindow(QWidget * parent = 0);
 	~MainWindow();
     void grabWindow();
+
+    void saveSettings();
+    void loadSettings();
+
     void plotData(int row);
 	void setupDemo(int demoIndex);
     //void setupQuadraticDemo(QCustomPlot * customPlot);
@@ -65,7 +69,7 @@ namespace Ui {
     //void setupScatterPixmapDemo(QCustomPlot * customPlot);
     //void setupDateDemo(QCustomPlot * customPlot);
     //void setupTextureBrushDemo(QCustomPlot * customPlot);
-    //void setupMultiAxisDemo(QCustomPlot * customPlot);
+    //void setupMultinAxisDemo(QCustomPlot * customPlot);
     //void setupLogarithmicDemo(QCustomPlot * customPlot);
     //void setupRealtimeDataDemo(QCustomPlot * customPlot);
     //void setupParametricCurveDemo(QCustomPlot * customPlot);
