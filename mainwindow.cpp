@@ -46,7 +46,7 @@
 */
 
 #include "mainwindow.h"
-//header file of mainwindow
+//header file of mainwindow will be created during build of mainwindow.ui
 #include "ui_mainwindow.h"
 
 #include <QDebug>
@@ -56,6 +56,7 @@
 #include <QMetaEnum>
 
 #include "db.h"
+//cout and co.
 #include <iostream>
 
 #include <unistd.h>
@@ -120,7 +121,7 @@ void MainWindow::saveSettings(){
         setting.setValue("position",this->geometry());
    setting.endGroup();
 
-   qDebug() << "Saved";
+   qDebug() << "Settings Saved";
 }
 
 void MainWindow::loadSettings(){
@@ -131,7 +132,7 @@ void MainWindow::loadSettings(){
         delay = setting.value("delay").toInt();
    setting.endGroup();
 
-   qDebug() << "Loaded";
+   qDebug() << "Settings Loaded";
 }
 
 
@@ -139,11 +140,16 @@ void MainWindow::loadSettings(){
 ui(new Ui::MainWindow)
 {
 	//calls setupUi method of mainwindow
-	ui->setupUi(this);
+    ui->setupUi(this);
+
 	//sets some geometry
     setGeometry(400, 250, 842, 390);
-    //setFixedSize();
-	//sets ui action for openFile
+    qDebug() << this->height() << " " << this->width() << " " << this->size();
+    //setFixedSize(842,390);
+
+    //Todo:http://everythingfrontend.com/posts/app-version-from-git-tag-in-qt-qml.html
+    setWindowTitle("GLP_Tool");
+    //sets ui action for openFile
 	connect(ui->actionOeffnen, SIGNAL(triggered(bool)), this,
 		SLOT(openFile()));
 	//sets ui action for createGif
@@ -157,8 +163,8 @@ ui(new Ui::MainWindow)
     qDebug() << "initialize StartLine, EndLine and Delay";
     db.setStartLine(1);
     db.setEndLine(10);
-    //default in ms
-    delay = 80;
+    //in case loadsettings will fail (default)
+    delay = 80;//ms
     loadSettings();
 	//######################################################
 
@@ -189,7 +195,7 @@ void MainWindow::setupDemo(int demoIndex)
 		setupGLPDemo(ui->customPlot);
 		break;
 	}
-	setWindowTitle("QCustomPlot: " + demoName);
+    setWindowTitle("QPl: " + demoName);
 	statusBar()->clearMessage();
 	currentDemoIndex = demoIndex;
 	//b1
@@ -493,7 +499,6 @@ void MainWindow::allScreenShots()
 			    ("Gif Datei konnte leider nicht erstellt werden");
 		}
 		//reset counter
-		//cnt = 0;
 		db.reset();
 	}
 }

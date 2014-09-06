@@ -51,12 +51,22 @@
     <addaction name="actionDelay_erh_hen"/>
     <addaction name="actionDelay_veringern"/>
    </widget>
+   <widget class="QMenu" name="menuHilfe">
+    <property name="title">
+     <string>Hilfe</string>
+    </property>
+    <addaction name="action_ber"/>
+   </widget>
    <addaction name="Datei"/>
    <addaction name="menuGLP"/>
+   <addaction name="menuHilfe"/>
   </widget>
   <action name="actionOeffnen">
    <property name="text">
     <string>Öffnen</string>
+   </property>
+   <property name="toolTip">
+    <string>Datei mit Messwerten öffnen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -79,6 +89,9 @@
    <property name="text">
     <string>Delay erhöhen</string>
    </property>
+   <property name="toolTip">
+    <string>Zeitverzögerung zwischen Bildern erhöhen</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
    </property>
@@ -87,8 +100,19 @@
    <property name="text">
     <string>Delay veringern</string>
    </property>
+   <property name="toolTip">
+    <string>Zeitverzögerung zwischen 2 Bilder veringern</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="action_ber">
+   <property name="text">
+    <string>über...</string>
    </property>
   </action>
  </widget>
