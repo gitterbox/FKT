@@ -22,6 +22,14 @@ Database::~Database()
 	cout << "db is dead" << endl;
 }
 
+/*  Reads Values from file
+ * 	file has currently 360 lines
+ *  the values of a line are separated with semicolons
+ *  (1-360) or (1-720)
+ * ---
+ *  returns  0 ok
+ *  returns -1 fail
+ */
 int Database::read(std::string path)
 {
 
@@ -102,8 +110,16 @@ int Database::getCurrentLine()
 	return n;
 }
 
+/*
+ * Reads a line
+ * first value of line is degree
+ * ---
+ * n points to the current position in lines
+ * returns a ptr to a line of values
+ */
 double *Database::getLine()
 {
+    //Todo: amount of double
 	double *vals = new double[35];
 	string line_as_str;
 	// vec|deg
