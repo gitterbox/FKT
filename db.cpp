@@ -32,7 +32,7 @@ Database::~Database()
  */
 int Database::read(std::string path)
 {
-
+    //Todo: load recent file  JWGEC++ S. 365
 	//inputfilestream
 	std::ifstream aFile;
 

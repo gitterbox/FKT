@@ -114,8 +114,12 @@ void::MainWindow::createGif()
 	}
 }
 
+/*
+ *  Saves Settings
+ *  //Todo: JW_GEC++ S.365
+ */
 void MainWindow::saveSettings(){
-   QSettings setting("myApp","mysettting");
+   //setting("myApp","mysettting");
    setting.beginGroup("MainWindows");
         setting.setValue("delay",delay);
         setting.setValue("position",this->geometry());
@@ -124,8 +128,12 @@ void MainWindow::saveSettings(){
    qDebug() << "Settings Saved";
 }
 
+/*
+ * Loads Settings
+ * JW_GEC++ S.365
+ */
 void MainWindow::loadSettings(){
-   QSettings setting("myApp","mysettting");
+   //setting("myApp","mysettting");
    setting.beginGroup("MainWindows");
         QRect geo = setting.value("position").toRect();
             setGeometry(geo);
@@ -401,7 +409,7 @@ void MainWindow::increaseDelay(){
    if (delay+inc<max)
       delay+=inc;
   statusBar()->showMessage("Delay ist: "+QString::number(delay)+" ms");
-  saveSettings();
+  //saveSettings();
 }
 
 void MainWindow::decreaseDelay(){
@@ -410,8 +418,15 @@ void MainWindow::decreaseDelay(){
    if (delay-inc>min)
       delay-=inc;
   statusBar()->showMessage("Delay ist: "+QString::number(delay)+" ms");
-  saveSettings();
+  //saveSettings();
 }
+
+//called when window will be closed
+void MainWindow::closeEvent(QCloseEvent *event){
+    saveSettings();
+    event->accept();
+}
+
 
 void MainWindow::grabWindow()
 {

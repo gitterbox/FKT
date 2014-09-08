@@ -55,7 +55,7 @@ namespace Ui {
 	explicit MainWindow(QWidget * parent = 0);
 	~MainWindow();
     void grabWindow();
-
+    void closeEvent(QCloseEvent *event);
     void saveSettings();
     void loadSettings();
 
@@ -107,6 +107,7 @@ namespace Ui {
     int delay;
     int currentAngle;
     QString filename;
+    QSettings setting;
 };
 
 #endif				// MAINWINDOW_H
