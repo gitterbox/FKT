@@ -11,8 +11,8 @@ Database::Database()
 {
 	//default values
 	setStartLine(1);
-  //Todo: set Endline automatically           to lines.size
-    setEndLine(360);
+	//Todo: set Endline automatically           to lines.size
+	setEndLine(360);
 
 	cout << "db is alive" << endl;
 }
@@ -32,7 +32,7 @@ Database::~Database()
  */
 int Database::read(std::string path)
 {
-    //Todo: load recent file  JWGEC++ S. 365
+	//Todo: load recent file  JWGEC++ S. 365
 	//inputfilestream
 	std::ifstream aFile;
 
@@ -119,7 +119,7 @@ int Database::getCurrentLine()
  */
 double *Database::getLine()
 {
-    //Todo: amount of double
+	//Todo: amount of double
 	double *vals = new double[35];
 	string line_as_str;
 	// vec|deg

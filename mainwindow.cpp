@@ -71,30 +71,38 @@ using namespace std;
 void MainWindow::openFile()
 {
 	//http://www.java2s.com/Code/Cpp/Qt/Setfilterforopenfiledialog.htm
-	QString fileName =
+	filename =
 	    QFileDialog::getOpenFileName(this, tr("CSV Datei öffnen"),
 					 QDir::tempPath(),
 					 tr("comma separated values (*.csv);;"),
 					 0);
 	//set to class member filename
-	filename = fileName;
+	//filename = fileName;
+	loadFile();
+}
 
-	QFile file(fileName);
-	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+void::MainWindow::loadFile()
+{
+	if (!filename.isEmpty()) {
+		QFile file(filename);
+		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+			//http://stackoverflow.com/questions/11191762/qt-qstring-to-stdstring
+			//linux
+			std::string utf8_text = filename.toUtf8().constData();
+			// or this if you on Windows :-)
+			//std::string current_locale_text = qs.toLocal8Bit().constData();
+			db.read(utf8_text);
+			cout << utf8_text << endl;
+			QString head("Datei ");
+			QString foot(" erfolgreich geladen (" +
+				     QString::number(db.getSize()) +
+				     " Datensätze)");
+			statusBar()->showMessage(head + filename + foot);
+		}
 
-		//http://stackoverflow.com/questions/11191762/qt-qstring-to-stdstring
-		//linux
-		std::string utf8_text = fileName.toUtf8().constData();
-		// or this if you on Windows :-)
-		//std::string current_locale_text = qs.toLocal8Bit().constData();
-		db.read(utf8_text);
-		cout << utf8_text << endl;
-		QString head("Datei ");
-		QString foot(" erfolgreich geladen (" +
-			     QString::number(db.getSize()) + " Datensätze)");
-		statusBar()->showMessage(head + fileName + foot);
-	}
-
+    } else {
+        statusBar()->showMessage(" ... konnte keine Datei laden");
+    }
 }
 
 void::MainWindow::createGif()
@@ -118,62 +126,69 @@ void::MainWindow::createGif()
  *  Saves Settings
  *  //Todo: JW_GEC++ S.365
  */
-void MainWindow::saveSettings(){
-   //setting("myApp","mysettting");
-   setting.beginGroup("MainWindows");
-        setting.setValue("delay",delay);
-        setting.setValue("position",this->geometry());
-   setting.endGroup();
+void MainWindow::saveSettings()
+{
+	//setting("myApp","mysettting");
+	setting.beginGroup("MainWindows");
+	setting.setValue("delay", delay);
+	setting.setValue("position", this->geometry());
+	setting.setValue("lastFile", filename);
+	setting.endGroup();
 
-   qDebug() << "Settings Saved";
+	qDebug() << "Settings Saved";
 }
 
 /*
  * Loads Settings
  * JW_GEC++ S.365
  */
-void MainWindow::loadSettings(){
-   //setting("myApp","mysettting");
-   setting.beginGroup("MainWindows");
-        QRect geo = setting.value("position").toRect();
-            setGeometry(geo);
-        delay = setting.value("delay").toInt();
-   setting.endGroup();
+void MainWindow::loadSettings()
+{
+	//setting("myApp","mysettting");
+	setting.beginGroup("MainWindows");
+	QRect geo = setting.value("position").toRect();
+	setGeometry(geo);
+	delay = setting.value("delay").toInt();
+	filename = setting.value("lastFile").toString();
+	loadFile();
+	setting.endGroup();
 
-   qDebug() << "Settings Loaded";
+	qDebug() << "Settings Loaded";
 }
-
 
  MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
 ui(new Ui::MainWindow)
 {
 	//calls setupUi method of mainwindow
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 	//sets some geometry
-    setGeometry(400, 250, 842, 390);
-    qDebug() << this->height() << " " << this->width() << " " << this->size();
-    //setFixedSize(842,390);
+	setGeometry(400, 250, 842, 390);
+	qDebug() << this->height() << " " << this->width() << " " << this->
+	    size();
+	//setFixedSize(842,390);
 
-    //Todo:http://everythingfrontend.com/posts/app-version-from-git-tag-in-qt-qml.html
-    setWindowTitle("GLP_Tool");
-    //sets ui action for openFile
+	//Todo:http://everythingfrontend.com/posts/app-version-from-git-tag-in-qt-qml.html
+	setWindowTitle("GLP_Tool");
+	//sets ui action for openFile
 	connect(ui->actionOeffnen, SIGNAL(triggered(bool)), this,
 		SLOT(openFile()));
 	//sets ui action for createGif
 	connect(ui->actionGif_Datei_erstellen, SIGNAL(triggered(bool)), this,
 		SLOT(createGif()));
-    //sets ui cation for editing delay
-    connect(ui->actionDelay_erh_hen, SIGNAL(triggered(bool)), this, SLOT(increaseDelay()));
-    connect(ui->actionDelay_veringern, SIGNAL(triggered(bool)), this, SLOT(decreaseDelay()));
+	//sets ui cation for editing delay
+	connect(ui->actionDelay_erh_hen, SIGNAL(triggered(bool)), this,
+		SLOT(increaseDelay()));
+	connect(ui->actionDelay_veringern, SIGNAL(triggered(bool)), this,
+		SLOT(decreaseDelay()));
 
 	//######################################################
-    qDebug() << "initialize StartLine, EndLine and Delay";
-    db.setStartLine(1);
-    db.setEndLine(10);
-    //in case loadsettings will fail (default)
-    delay = 80;//ms
-    loadSettings();
+	qDebug() << "initialize StartLine, EndLine and Delay";
+	db.setStartLine(1);
+	db.setEndLine(10);
+    //in case loadsettings fails (default)
+	delay = 80;		//ms
+	loadSettings();
 	//######################################################
 
 	setupPlayground(ui->customPlot);
@@ -203,7 +218,7 @@ void MainWindow::setupDemo(int demoIndex)
 		setupGLPDemo(ui->customPlot);
 		break;
 	}
-    setWindowTitle("QPl: " + demoName);
+	setWindowTitle("QPl: " + demoName);
 	statusBar()->clearMessage();
 	currentDemoIndex = demoIndex;
 	//b1
@@ -309,10 +324,10 @@ void MainWindow::realtimeDataSlot()
 					   ("%1 FPS, Total Data points: %2")
 					   .arg(frameCount / (key - lastFpsKey),
 						0, 'f', 0)
-					   .arg(ui->customPlot->
-						graph(0)->data()->count() +
-						ui->customPlot->
-						graph(1)->data()->count())
+					   .arg(ui->customPlot->graph(0)->
+						data()->count() +
+						ui->customPlot->graph(1)->
+						data()->count())
 					   , 0);
 		lastFpsKey = key;
 		frameCount = 0;
@@ -356,8 +371,8 @@ void MainWindow::bracketDataSlot()
 					   ("%1 FPS, Total Data points: %2")
 					   .arg(frameCount / (key - lastFpsKey),
 						0, 'f', 0)
-					   .arg(ui->customPlot->
-						graph(0)->data()->count())
+					   .arg(ui->customPlot->graph(0)->
+						data()->count())
 					   , 0);
 		lastFpsKey = key;
 		frameCount = 0;
@@ -386,11 +401,10 @@ void MainWindow::screenShot()
 	QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(),
 						       this->x() + 2,
 						       this->y() + 2,
-						       this->
-						       frameGeometry().width() -
-						       4,
-						       this->
-						       frameGeometry().height()
+						       this->frameGeometry().
+						       width() - 4,
+						       this->frameGeometry().
+						       height()
 						       - 4);
 	//QPixmap pm2 = qApp->primaryScreen()->grabWindow(
 
@@ -403,30 +417,34 @@ void MainWindow::screenShot()
 	qApp->quit();
 }
 
-void MainWindow::increaseDelay(){
-   int max=2000;
-   int inc=10;
-   if (delay+inc<max)
-      delay+=inc;
-  statusBar()->showMessage("Delay ist: "+QString::number(delay)+" ms");
-  //saveSettings();
+void MainWindow::increaseDelay()
+{
+	int max = 2000;
+	int inc = 10;
+	if (delay + inc < max)
+		delay += inc;
+	statusBar()->showMessage("Delay ist: " + QString::number(delay) +
+				 " ms");
+	//saveSettings();
 }
 
-void MainWindow::decreaseDelay(){
-   int min=50;
-   int inc=10;
-   if (delay-inc>min)
-      delay-=inc;
-  statusBar()->showMessage("Delay ist: "+QString::number(delay)+" ms");
-  //saveSettings();
+void MainWindow::decreaseDelay()
+{
+	int min = 50;
+	int inc = 10;
+	if (delay - inc > min)
+		delay -= inc;
+	statusBar()->showMessage("Delay ist: " + QString::number(delay) +
+				 " ms");
+	//saveSettings();
 }
 
 //called when window will be closed
-void MainWindow::closeEvent(QCloseEvent *event){
-    saveSettings();
-    event->accept();
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+	saveSettings();
+	event->accept();
 }
-
 
 void MainWindow::grabWindow()
 {
@@ -474,7 +492,7 @@ void MainWindow::allScreenShots()
 		ui->verticalLayout->addWidget(ui->customPlot);
 		setupGLPDemo(ui->customPlot);
 		// setup delay for demos that need time to develop proper look:
-        statusBar()->showMessage("erstelle Bilddateien ...");
+		statusBar()->showMessage("erstelle Bilddateien ...");
 		QTimer::singleShot(delay, this, SLOT(allScreenShots()));
 		//if (currentAngle!=db.getEndLine())
 		db.nextLine();
@@ -484,8 +502,7 @@ void MainWindow::allScreenShots()
 		grabWindow();
 		int retval;
 		QString temploc = QDir::tempPath();
-		statusBar()->
-		    showMessage
+		statusBar()->showMessage
 		    ("erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");
 
 		//linux
@@ -506,11 +523,13 @@ void MainWindow::allScreenShots()
 		    system((cmd + " " + param1 + value + " " + param2 + " " +
 			    in + " " + out).c_str());
 		if (retval == 0) {
-			statusBar()->
-			    showMessage("Gif Datei wurde erfolgreich erstellt");
+			statusBar()->showMessage
+			    ("Gif Datei wurde erfolgreich erstellt");
+			//Todo: move to separate method
+			QDesktopServices::
+			    openUrl(QUrl(temploc + "/" + "anim.gif"));
 		} else {
-			statusBar()->
-			    showMessage
+			statusBar()->showMessage
 			    ("Gif Datei konnte leider nicht erstellt werden");
 		}
 		//reset counter

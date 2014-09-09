@@ -58,7 +58,7 @@ namespace Ui {
     void closeEvent(QCloseEvent *event);
     void saveSettings();
     void loadSettings();
-
+    void loadFile();
     void plotData(int row);
 	void setupDemo(int demoIndex);
     //void setupQuadraticDemo(QCustomPlot * customPlot);
