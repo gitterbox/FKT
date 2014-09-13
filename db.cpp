@@ -64,6 +64,7 @@ int Database::read(std::string path)
 		line = v.validate(ss, pos);
 		if (line == QValidator::Acceptable)
 			lines.push_back(s);
+           cout << s << endl << endl;
 	}
 
 	//Debug
@@ -142,9 +143,12 @@ double *Database::getLine()
 		character = line_as_str.substr(0, 1);
 
 		pos = line_as_str.find(delimiter, start);
+        //see what column contains
 		column = line_as_str.substr(start, pos);
+
 		if (column != "")
-			vals[i] = atof(column.c_str());	//string to double!
+            vals[i] = atof(column.data());	//string to double!
+            cout << "vals[" << i << "]:" << vals[i] << " col:" << column << endl;
 		++i;
 		//cout << "<td>" << column << "</td>";
 		//save remaining charjs

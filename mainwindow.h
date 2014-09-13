@@ -44,7 +44,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
-#include "../../qcustomplot.h"	// the header file of QCustomPlot. Don't forget to add it to your project, if you use an IDE, so it gets compiled.
+#include "../qcp/qcustomplot.h"	// the header file of QCustomPlot. Don't forget to add it to your project, if you use an IDE, so it gets compiled.
 #include "db.h"
 #include "gui.h"
 
@@ -106,8 +106,12 @@ namespace Ui {
     int maxpics;
     int delay;
     int currentAngle;
-    QString filename;
+
     QSettings setting;
+
+ protected:
+    QString filename;
+
 };
 
 #endif				// MAINWINDOW_H

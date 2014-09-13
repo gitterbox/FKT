@@ -83,25 +83,26 @@ void MainWindow::openFile()
 
 void::MainWindow::loadFile()
 {
+    QString test = filename;
 	if (!filename.isEmpty()) {
-		QFile file(filename);
+        QFile file(filename);
 		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 			//http://stackoverflow.com/questions/11191762/qt-qstring-to-stdstring
 			//linux
-			std::string utf8_text = filename.toUtf8().constData();
+            //std::string utf8_text = filename.toUtf8().constData();
 			// or this if you on Windows :-)
-			//std::string current_locale_text = qs.toLocal8Bit().constData();
-			db.read(utf8_text);
-			cout << utf8_text << endl;
+            //std::string fn = filename.toStdString()
+            db.read(filename.toLocal8Bit().constData());
+
 			QString head("Datei ");
 			QString foot(" erfolgreich geladen (" +
 				     QString::number(db.getSize()) +
 				     " Datensätze)");
-			statusBar()->showMessage(head + filename + foot);
+            statusBar()->showMessage(head + filename + foot);
 		}
 
     } else {
-        statusBar()->showMessage(" ... konnte keine Datei laden");
+        statusBar()->showMessage(" ... konnte keine Datei laden :(");
     }
 }
 
@@ -145,7 +146,7 @@ void MainWindow::saveSettings()
 void MainWindow::loadSettings()
 {
 	//setting("myApp","mysettting");
-	setting.beginGroup("MainWindows");
+    setting.beginGroup("MainWindows");
 	QRect geo = setting.value("position").toRect();
 	setGeometry(geo);
 	delay = setting.value("delay").toInt();
@@ -492,7 +493,7 @@ void MainWindow::allScreenShots()
 		ui->verticalLayout->addWidget(ui->customPlot);
 		setupGLPDemo(ui->customPlot);
 		// setup delay for demos that need time to develop proper look:
-		statusBar()->showMessage("erstelle Bilddateien ...");
+        statusBar()->showMessage("erstelle Bilddateien in ("+QDir::tempPath()+") ...");
 		QTimer::singleShot(delay, this, SLOT(allScreenShots()));
 		//if (currentAngle!=db.getEndLine())
 		db.nextLine();
