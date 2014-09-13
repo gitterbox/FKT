@@ -129,7 +129,6 @@ void::MainWindow::createGif()
  */
 void MainWindow::saveSettings()
 {
-	//setting("myApp","mysettting");
 	setting.beginGroup("MainWindows");
 	setting.setValue("delay", delay);
 	setting.setValue("position", this->geometry());
@@ -145,8 +144,7 @@ void MainWindow::saveSettings()
  */
 void MainWindow::loadSettings()
 {
-	//setting("myApp","mysettting");
-    setting.beginGroup("MainWindows");
+        setting.beginGroup("MainWindows");
 	QRect geo = setting.value("position").toRect();
 	setGeometry(geo);
 	delay = setting.value("delay").toInt();
@@ -507,7 +505,9 @@ void MainWindow::allScreenShots()
 		    ("erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");
 
 		//linux
-		string cmd = "/usr/bin/convert";
+        //string cmd = "/usr/bin/convert";
+            //windows
+            string cmd = "convert";
 		string param1 = "-delay ";	//gaps between images
 		string param2 = "-loop 0";	//replay gif
 		string in = temploc.toStdString() + "/" + "*.png";

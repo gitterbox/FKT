@@ -33,8 +33,11 @@ int main(int argc, char *argv[])
 #endif
 
 	QApplication app(argc, argv);
-        QCoreApplication::setOrganizationName("Renku Inc");
+
+        //QSettings
+        QCoreApplication::setOrganizationName("Renku77");
         QCoreApplication::setApplicationName("GLP-Tool");
+
 	MainWindow w;
 	w.show();
 

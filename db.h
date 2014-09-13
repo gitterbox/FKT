@@ -20,6 +20,7 @@ class Database {
     int getEndLine();
     void reset();
     void nextLine();
+    double toDouble(std::string s);
 
 
  private:
