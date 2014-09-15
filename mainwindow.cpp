@@ -508,6 +508,7 @@ void MainWindow::allScreenShots()
         statusBar()->showMessage
                 ("erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");
 
+
         //linux
         //string cmd = "/usr/bin/convert";
         //windows
@@ -527,7 +528,34 @@ void MainWindow::allScreenShots()
 
         // calling system (cmd + param[1-n] + in + out)
         string cmd = program + " " + param1 + s.toLocal8Bit().constData() + " " + param2 + " " + in + " " + out;
-        retval = system((cmd).c_str());
+        //retval = system((cmd).c_str());
+
+        QProcess process;
+        //process.start("convert.exe \-delay 50 C:\\Users\\rene\\Appdata\\Local\\Temp\\*.png C:\\Users\\rene\\Appdata\\Local\\Temp\\ani.gif");
+        //process.start("calc.exe");
+        QString wd = QDir::homePath()+QDir::separator()+"Pictures";
+                //+QDir::separator()+"Pictures";
+        process.setWorkingDirectory(wd);
+        QString cmd_;
+        QStringList args;
+        cmd_ = "mspaint";
+        args << "circle.png";
+        process.start(cmd_,args);
+        process.waitForFinished(-1);
+        if(process.exitCode()!=0){
+            qDebug () << " Error " << process.exitCode() << process.readAllStandardError();
+        }
+        else{
+            qDebug () << " Ok " << process.readAllStandardOutput() << process.readAllStandardError();
+        }
+
+       // QString command = "convert.exe";
+        //QStringList arguments;
+        //arguments << "-delay" << "50";
+       // arguments = QStringList() << "\-delay" << "50" << "C:\\Users\\rene\\Appdata\\Local\\Temp\\*.png" << "C:\\Users\\rene\\Appdata\\Local\\Temp\\ani.gif";
+        //process.execute(command, arguments);
+
+
         if (retval == 0) {
             statusBar()->showMessage
                     ("Gif Datei wurde erfolgreich erstellt");
