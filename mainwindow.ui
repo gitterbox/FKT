@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>QCustomPlot plot examples</string>
+   <string>GLP-Tool</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>F:/software/programmierung/bearing_37627.jpg</normaloff>F:/software/programmierung/bearing_37627.jpg</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -27,7 +31,7 @@
      <x>0</x>
      <y>0</y>
      <width>548</width>
-     <height>22</height>
+     <height>18</height>
     </rect>
    </property>
    <property name="statusTip">
@@ -121,7 +125,7 @@
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
-   <header>../../qcustomplot.h</header>
+   <header>../qcp/qcustomplot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

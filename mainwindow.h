@@ -91,6 +91,7 @@ namespace Ui {
     void createGif();
     void increaseDelay();
     void decreaseDelay();
+    void showAbout();
 
  private:
 	 Ui::MainWindow * ui;
@@ -105,6 +106,8 @@ namespace Ui {
     int cnt;
     int maxpics;
     int delay;
+    QString app_name;
+    QString app_version;
     int currentAngle;
 
     QSettings setting;

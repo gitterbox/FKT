@@ -39,9 +39,6 @@
 **                                                                                                         **
 *************************************************************************************************************/
 /*Global Todo
-**create Settings
-** linux branch
-** windows branch
 ** autoinstaller with convert
 */
 
@@ -180,18 +177,27 @@ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
             SLOT(increaseDelay()));
     connect(ui->actionDelay_veringern, SIGNAL(triggered(bool)), this,
             SLOT(decreaseDelay()));
+    connect(ui->action_ber, SIGNAL(triggered(bool)), this, SLOT(showAbout()));
 
     //######################################################
     qDebug() << "initialize StartLine, EndLine and Delay";
     db.setStartLine(1);
-    db.setEndLine(10);
+    db.setEndLine(3);
     //in case loadsettings fails (default)
-    delay = 80;		//ms
+    delay = 500; //ms
+    app_name = "GLP-Tool";
+    app_version = "1.3.0";
     loadSettings();
     //Todo: set default values for window  in case nothing has saved before
+    //app_icon: http://all-free-download.com/free-icon/icons/bearing_37627.html
     //######################################################
-
     setupPlayground(ui->customPlot);
+}
+
+void MainWindow::showAbout(){
+    //
+    QMessageBox::information(this, "Info", app_name + " " + app_version);
+    //
 }
 
 void MainWindow::setupDemo(int demoIndex)
@@ -528,38 +534,34 @@ void MainWindow::allScreenShots()
 
         // calling system (cmd + param[1-n] + in + out)
         string cmd = program + " " + param1 + s.toLocal8Bit().constData() + " " + param2 + " " + in + " " + out;
-        //retval = system((cmd).c_str());
+        retval = system((cmd).c_str());
 
-        QProcess process;
-        //process.start("convert.exe \-delay 50 C:\\Users\\rene\\Appdata\\Local\\Temp\\*.png C:\\Users\\rene\\Appdata\\Local\\Temp\\ani.gif");
-        //process.start("calc.exe");
-        QString wd = QDir::homePath()+QDir::separator()+"Pictures";
-                //+QDir::separator()+"Pictures";
-        process.setWorkingDirectory(wd);
-        QString cmd_;
-        QStringList args;
-        cmd_ = "mspaint";
-        args << "circle.png";
-        process.start(cmd_,args);
-        process.waitForFinished(-1);
-        if(process.exitCode()!=0){
-            qDebug () << " Error " << process.exitCode() << process.readAllStandardError();
-        }
-        else{
-            qDebug () << " Ok " << process.readAllStandardOutput() << process.readAllStandardError();
-        }
+//        QProcess *proc;
+//        proc = new QProcess(this);
+//        QStringList args;
+//        //args << "-delay";
+//        //args << "50";
+//        args << "*.png";
+//        args << "out.gif";
+//        QString wd = QDir::tempPath();
+//        //proc->setProcessChannelMode(QProcess::MergedChannels);
+//        proc->setWorkingDirectory(wd);
+//        //QString nargs = "*.png out.gif"; proc->setNativeArguments(nargs);
+//        proc->execute("convert",args);
+//        //-1 says wait not only 30sec rather to the end of proc
+//        proc->waitForFinished(-1);
 
-       // QString command = "convert.exe";
-        //QStringList arguments;
-        //arguments << "-delay" << "50";
-       // arguments = QStringList() << "\-delay" << "50" << "C:\\Users\\rene\\Appdata\\Local\\Temp\\*.png" << "C:\\Users\\rene\\Appdata\\Local\\Temp\\ani.gif";
-        //process.execute(command, arguments);
-
+//        if(proc->exitCode()!=0){
+//            qDebug () << " Error " << proc->exitCode() << proc->readAllStandardError();
+//        }
+//        else{
+//            qDebug () << " Ok " << proc->readAllStandardOutput() << proc->readAllStandardError();
+//        }
 
         if (retval == 0) {
             statusBar()->showMessage
                     ("Gif Datei wurde erfolgreich erstellt");
-                    //Todo: move to separate method
+            //Todo: move to separate method
             //QDesktopServices::openUrl(QUrl(out));
         } else {
             statusBar()->showMessage
