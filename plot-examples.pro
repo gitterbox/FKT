@@ -16,10 +16,12 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     db.h \
-    ../gui.h \
     gui.h \
     ../qcp/qcustomplot.h
 
 FORMS    += mainwindow.ui
 
 CONFIG += c++11
+
+RESOURCES += \
+    ../renku.qrc

@@ -108,6 +108,7 @@ namespace Ui {
     int delay;
     QString app_name;
     QString app_version;
+    QString os_version;
     int currentAngle;
 
     QSettings setting;

@@ -99,7 +99,7 @@ void::MainWindow::loadFile()
         }
 
     } else {
-        statusBar()->showMessage(" ... konnte keine Datei laden :(");
+        statusBar()->showMessage(" ... konnte keine Datei laden ");
     }
 }
 
@@ -142,8 +142,11 @@ void MainWindow::saveSettings()
 void MainWindow::loadSettings()
 {
     setting.beginGroup("MainWindows");
-    QRect geo = setting.value("position").toRect();
-    setGeometry(geo);
+    //if (setting.contains("position")) {
+        QRect geo = setting.value("position").toRect();
+        setGeometry(geo);
+    //}
+    //if (setting.contains("delay"))
     delay = setting.value("delay").toInt();
     filename = setting.value("lastFile").toString();
     loadFile();
@@ -187,17 +190,27 @@ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
     delay = 500; //ms
     app_name = "GLP-Tool";
     app_version = "1.3.0";
-    loadSettings();
+    // loadSettings does only works if settings available
+    // when the program starts up the first time loadsettings will not be called
+    if (!setting.allKeys().empty()) loadSettings();
     //Todo: set default values for window  in case nothing has saved before
     //app_icon: http://all-free-download.com/free-icon/icons/bearing_37627.html
     //######################################################
     setupPlayground(ui->customPlot);
 }
 
+
+
 void MainWindow::showAbout(){
-    //
-    QMessageBox::information(this, "Info", app_name + " " + app_version);
-    //
+    //JW_GEC++ S.117
+    switch (QSysInfo::windowsVersion()){
+    case QSysInfo::WV_VISTA: os_version = "Windows Vista";
+    case QSysInfo::WV_WINDOWS7: os_version = "Windows 7";
+    case QSysInfo::WV_WINDOWS8: os_version = "Windows 8";
+    case QSysInfo::WV_WINDOWS8_1: os_version = "Windosw 8.1";
+    default: os_version = "Windows";
+    }
+    QMessageBox::information(this, "Info", app_name + " " + app_version + " (" + os_version + ")");
 }
 
 void MainWindow::setupDemo(int demoIndex)
@@ -536,27 +549,27 @@ void MainWindow::allScreenShots()
         string cmd = program + " " + param1 + s.toLocal8Bit().constData() + " " + param2 + " " + in + " " + out;
         retval = system((cmd).c_str());
 
-//        QProcess *proc;
-//        proc = new QProcess(this);
-//        QStringList args;
-//        //args << "-delay";
-//        //args << "50";
-//        args << "*.png";
-//        args << "out.gif";
-//        QString wd = QDir::tempPath();
-//        //proc->setProcessChannelMode(QProcess::MergedChannels);
-//        proc->setWorkingDirectory(wd);
-//        //QString nargs = "*.png out.gif"; proc->setNativeArguments(nargs);
-//        proc->execute("convert",args);
-//        //-1 says wait not only 30sec rather to the end of proc
-//        proc->waitForFinished(-1);
+        //        QProcess *proc;
+        //        proc = new QProcess(this);
+        //        QStringList args;
+        //        //args << "-delay";
+        //        //args << "50";
+        //        args << "*.png";
+        //        args << "out.gif";
+        //        QString wd = QDir::tempPath();
+        //        //proc->setProcessChannelMode(QProcess::MergedChannels);
+        //        proc->setWorkingDirectory(wd);
+        //        //QString nargs = "*.png out.gif"; proc->setNativeArguments(nargs);
+        //        proc->execute("convert",args);
+        //        //-1 says wait not only 30sec rather to the end of proc
+        //        proc->waitForFinished(-1);
 
-//        if(proc->exitCode()!=0){
-//            qDebug () << " Error " << proc->exitCode() << proc->readAllStandardError();
-//        }
-//        else{
-//            qDebug () << " Ok " << proc->readAllStandardOutput() << proc->readAllStandardError();
-//        }
+        //        if(proc->exitCode()!=0){
+        //            qDebug () << " Error " << proc->exitCode() << proc->readAllStandardError();
+        //        }
+        //        else{
+        //            qDebug () << " Ok " << proc->readAllStandardOutput() << proc->readAllStandardError();
+        //        }
 
         if (retval == 0) {
             statusBar()->showMessage

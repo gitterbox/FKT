@@ -14,8 +14,8 @@
    <string>GLP-Tool</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>F:/software/programmierung/bearing_37627.jpg</normaloff>F:/software/programmierung/bearing_37627.jpg</iconset>
+   <iconset resource="../renku.qrc">
+    <normaloff>:/img/bearing_37627.jpg</normaloff>:/img/bearing_37627.jpg</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -129,7 +129,9 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../renku.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionProgramm_beenden</sender>
