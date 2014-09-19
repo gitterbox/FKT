@@ -39,7 +39,11 @@
 **                                                                                                         **
 *************************************************************************************************************/
 /*Global Todo
-** autoinstaller with convert
+** Achsenbeschriftung in Settings
+** Anpassung der Ränder der Gif Datei
+** Test auf 32 Bit Windows
+** Dokumentation des Deploy
+** Dokumentation der letzten 2 Wochen
 */
 
 #include "mainwindow.h"
@@ -525,7 +529,7 @@ void MainWindow::allScreenShots()
         QString delimiter = QDir::separator();
 
         statusBar()->showMessage
-                ("erstelle Gif Datei ... (kann je nach Anzahl der Bilder einen Moment dauern)");
+                ("erstelle Gif Datei ... (kann je nach Anzahl der Bilder, sowie der Leistung des PCs einen Moment dauern)");
 
 
         //linux
@@ -573,7 +577,7 @@ void MainWindow::allScreenShots()
 
         if (retval == 0) {
             statusBar()->showMessage
-                    ("Gif Datei wurde erfolgreich erstellt");
+                    ("Gif Datei wurde erfolgreich erstellt ("+QString::fromStdString(out)+")");
             //Todo: move to separate method
             //QDesktopServices::openUrl(QUrl(out));
         } else {
