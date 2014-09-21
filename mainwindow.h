@@ -59,8 +59,8 @@ namespace Ui {
     void saveSettings();
     void loadSettings();
     void loadFile();
-    void plotData(int row);
 	void setupDemo(int demoIndex);
+    void clean();
     //void setupQuadraticDemo(QCustomPlot * customPlot);
     //void setupSimpleDemo(QCustomPlot * customPlot);
     //void setupSincScatterDemo(QCustomPlot * customPlot);
@@ -92,6 +92,7 @@ namespace Ui {
     void increaseDelay();
     void decreaseDelay();
     void showAbout();
+    void setTestmode();
 
  private:
 	 Ui::MainWindow * ui;
@@ -110,7 +111,12 @@ namespace Ui {
     QString app_version;
     QString os_version;
     int currentAngle;
-
+    QString x_label;
+    QString y_label;
+    int left;
+    int right;
+    int top;
+    int bottom;
     QSettings setting;
 
  protected:

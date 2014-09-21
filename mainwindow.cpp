@@ -84,7 +84,6 @@ void MainWindow::openFile()
 
 void::MainWindow::loadFile()
 {
-    QString test = filename;
     if (!filename.isEmpty()) {
         QFile file(filename);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -134,6 +133,13 @@ void MainWindow::saveSettings()
     setting.setValue("delay", delay);
     setting.setValue("position", this->geometry());
     setting.setValue("lastFile", filename);
+    setting.setValue("x_label",x_label);
+    setting.setValue("y_label",y_label);
+    setting.setValue("testmode",FALSE);
+    setting.setValue("left",left);
+    setting.setValue("right",right);
+    setting.setValue("top",top);
+    setting.setValue("bottom",bottom);
     setting.endGroup();
 
     qDebug() << "Settings Saved";
@@ -146,17 +152,32 @@ void MainWindow::saveSettings()
 void MainWindow::loadSettings()
 {
     setting.beginGroup("MainWindows");
-    //if (setting.contains("position")) {
         QRect geo = setting.value("position").toRect();
         setGeometry(geo);
-    //}
-    //if (setting.contains("delay"))
+    if (setting.value("testmode")==TRUE)
+        setTestmode();
     delay = setting.value("delay").toInt();
+    x_label = setting.value("x_label").toString();
+    y_label = setting.value("y_label").toString();
     filename = setting.value("lastFile").toString();
+    left = setting.value("left").toInt();
+    right = setting.value("right").toInt();
+    top = setting.value("top").toInt();
+    bottom = setting.value("bottom").toInt();
+
     loadFile();
+
     setting.endGroup();
 
     qDebug() << "Settings Loaded";
+}
+
+
+void MainWindow::setTestmode(){
+    //Todo: save in settings
+    db.setStartLine(1);
+    db.setEndLine(3);
+    setWindowTitle(app_name+" (Testmodus)");
 }
 
 MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
@@ -172,7 +193,7 @@ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
     //setFixedSize(842,390);
 
     //Todo:http://everythingfrontend.com/posts/app-version-from-git-tag-in-qt-qml.html
-    setWindowTitle("GLP_Tool");
+    setWindowTitle(app_name);
     //sets ui action for openFile
     connect(ui->actionOeffnen, SIGNAL(triggered(bool)), this,
             SLOT(openFile()));
@@ -185,21 +206,30 @@ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
     connect(ui->actionDelay_veringern, SIGNAL(triggered(bool)), this,
             SLOT(decreaseDelay()));
     connect(ui->action_ber, SIGNAL(triggered(bool)), this, SLOT(showAbout()));
+    connect(ui->actionTestmodus_aktivieren, SIGNAL(triggered(bool)), this, SLOT(setTestmode()));
 
-    //######################################################
     qDebug() << "initialize StartLine, EndLine and Delay";
-    db.setStartLine(1);
-    db.setEndLine(3);
-    //in case loadsettings fails (default)
+
+    //############################################################################################
+    //in case loadsettings will fail
+    // or app starts up the first time
+    //we set some defaults
+    left=0;
+    right=0;
+    top=0;
+    bottom=0;
     delay = 500; //ms
+    x_label = "X";
+    y_label = "Y";
     app_name = "GLP-Tool";
-    app_version = "1.3.0";
-    // loadSettings does only works if settings available
+    app_version = "1.3.1";
+    // loadSettings does only work if settings available at all
     // when the program starts up the first time loadsettings will not be called
     if (!setting.allKeys().empty()) loadSettings();
     //Todo: set default values for window  in case nothing has saved before
     //app_icon: http://all-free-download.com/free-icon/icons/bearing_37627.html
-    //######################################################
+    //############################################################################################
+
     setupPlayground(ui->customPlot);
 }
 
@@ -248,10 +278,6 @@ void MainWindow::setupDemo(int demoIndex)
     //ui->customPlot->replot();
 }
 
-//not used yet
-void MainWindow::plotData(int row)
-{
-}
 
 void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
 {
@@ -263,7 +289,6 @@ void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
     // generate some data:
     int max = 30;		//one row has max values
     //double step = 1/max;
-
     QVector < double >x(max), y(max);	// initialize with entries 0..100
     for (int i = 1; i < max; ++i) {
         if (values[i] > -1 && values[i] < 1) {
@@ -287,10 +312,10 @@ void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
     customPlot->graph()->setData(x, y);
     // give the axes some labels:
     QString valueAsString = QString::number(currentAngle);
-    const QString xax = "x-Achse | " + valueAsString + " Grad";
+    const QString xax = x_label + " | " + valueAsString + " Grad";
     //string xlabel = "x "<<values[0]<<" Grad"
     customPlot->xAxis->setLabel(xax);
-    customPlot->yAxis->setLabel("y-Achse");
+    customPlot->yAxis->setLabel(y_label);
     // set axes ranges, so we see all data:
     customPlot->xAxis->setRange(-1, 1);
     customPlot->yAxis->setRange(1, 0);
@@ -481,10 +506,10 @@ void MainWindow::grabWindow()
 #else
     //b2
     QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(),
-                                                   this->x() + 3,	//left
-                                                   this->y() + 51,	//top
-                                                   this->frameGeometry().width() - 7,	//right
-                                                   this->frameGeometry().height() - 83);	//bottom
+                                                   this->x() + 3+left,	//left
+                                                   this->y() + 51+top,	//top
+                                                   this->frameGeometry().width() - 7-right,	//right
+                                                   this->frameGeometry().height() - 83+bottom);	//bottom
 #endif
     QString scnt = QString::number(currentAngle);
 
@@ -525,22 +550,27 @@ void MainWindow::allScreenShots()
         grabWindow();
         int retval;
         //QStandardPaths::TempLocation()
-        QString temploc = QDir::tempPath();
         QString delimiter = QDir::separator();
+        QString temploc = QDir::tempPath();
+        //Todo: desk works on windows, but should tested if works on linux too
+        QString desk = QDir::homePath()+delimiter+"Desktop";
+        QDateTime now = QDateTime::currentDateTime();
+
+
 
         statusBar()->showMessage
                 ("erstelle Gif Datei ... (kann je nach Anzahl der Bilder, sowie der Leistung des PCs einen Moment dauern)");
 
 
         //linux
-        //string cmd = "/usr/bin/convert";
+        //string program = "/usr/bin/convert";
         //windows
         string program = "convert";
         string param1 = "-delay ";	//gaps between images
         string param2 = "-loop 0";	//replay gif
         string in = temploc.toStdString() + delimiter.toStdString() + "*.png";
         //Todo: name gif to filename
-        string out = temploc.toStdString() + delimiter.toStdString() + "anim.gif";
+        string out = desk.toStdString() + delimiter.toStdString() + "anim"+"."+"gif";
         //divide by 10 in order to get value for convert
         int res = delay / 10;
         //http://superuser.com/questions/569924/why-is-the-gif-i-created-so-slow
@@ -586,5 +616,34 @@ void MainWindow::allScreenShots()
         }
         //reset counter
         db.reset();
+        clean();
+    }
+}
+
+void MainWindow::clean(){
+    QDirIterator it(QDir::tempPath());
+    QStringList tmp_files;
+    //file extension e.g. files << ".exe" << ".dll" ...
+    tmp_files << "png";
+
+    while (it.hasNext()){
+
+        qDebug() << "Processing: " << it.next();
+
+        bool tmp_file = FALSE;
+
+        foreach (QString file, tmp_files){
+            QString t = it.fileInfo().fileName();
+            if (it.fileInfo().fileName().endsWith(file,Qt::CaseInsensitive)){
+                tmp_file = TRUE;
+                break;
+            }
+        }
+
+        if (tmp_file){
+            QDir dir;
+            dir.remove(it.filePath());
+            qDebug() << "Removing file:" << it.filePath();
+        }
     }
 }

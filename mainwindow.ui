@@ -54,6 +54,8 @@
     <addaction name="separator"/>
     <addaction name="actionDelay_erh_hen"/>
     <addaction name="actionDelay_veringern"/>
+    <addaction name="separator"/>
+    <addaction name="actionTestmodus_aktivieren"/>
    </widget>
    <widget class="QMenu" name="menuHilfe">
     <property name="title">
@@ -117,6 +119,14 @@
   <action name="action_ber">
    <property name="text">
     <string>über...</string>
+   </property>
+  </action>
+  <action name="actionTestmodus_aktivieren">
+   <property name="text">
+    <string>Testmodus aktivieren</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>
