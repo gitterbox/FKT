@@ -39,11 +39,10 @@
 **                                                                                                         **
 *************************************************************************************************************/
 /*Global Todo
-** Achsenbeschriftung in Settings
-** Anpassung der Ränder der Gif Datei
-** Test auf 32 Bit Windows
 ** Dokumentation des Deploy
 ** Dokumentation der letzten 2 Wochen
+** Einzelbilder
+**
 */
 
 #include "mainwindow.h"
@@ -175,6 +174,7 @@ void MainWindow::loadSettings()
 
 void MainWindow::setTestmode(){
     //Todo: save in settings
+    cleanTemp();
     db.setStartLine(1);
     db.setEndLine(3);
     setWindowTitle(app_name+" (Testmodus)");
@@ -185,7 +185,7 @@ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
 {
     //calls setupUi method of mainwindow
     ui->setupUi(this);
-
+    //parent->setWindowIcon( QIcon(":/img/bearing_37627.jpg") );
     //sets some geometry
     setGeometry(400, 250, 842, 390);
     qDebug() << this->height() << " " << this->width() << " " << this->
@@ -194,6 +194,8 @@ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
 
     //Todo:http://everythingfrontend.com/posts/app-version-from-git-tag-in-qt-qml.html
     setWindowTitle(app_name);
+
+    //##SLOTS#####################################################################################
     //sets ui action for openFile
     connect(ui->actionOeffnen, SIGNAL(triggered(bool)), this,
             SLOT(openFile()));
@@ -210,8 +212,8 @@ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
 
     qDebug() << "initialize StartLine, EndLine and Delay";
 
-    //############################################################################################
-    //in case loadsettings will fail
+    //##SETTINGS###################################################################################
+    //in case loadsettings has failed
     // or app starts up the first time
     //we set some defaults
     left=0;
@@ -222,7 +224,7 @@ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
     x_label = "X";
     y_label = "Y";
     app_name = "GLP-Tool";
-    app_version = "1.3.1";
+    app_version = "1.3.2";
     // loadSettings does only work if settings available at all
     // when the program starts up the first time loadsettings will not be called
     if (!setting.allKeys().empty()) loadSettings();
@@ -291,12 +293,20 @@ void MainWindow::setupGLPDemo(QCustomPlot * customPlot)
     //double step = 1/max;
     QVector < double >x(max), y(max);	// initialize with entries 0..100
     for (int i = 1; i < max; ++i) {
+
+        //retrieve x values
         if (values[i] > -1 && values[i] < 1) {
-            x[i] = values[i];	// x goes from -1 to 1
-            cout << i << " x:" << x[i];
+            if (values[i]==0){
+                x[i] = 50; 		// move 0 values outside
+            } else {
+                x[i] = values[i];	// x goes from -1 to 1
+                //cout << i << " x:" << x[i];
+            }
         }
+
+        //calculate y values
         y[i] = 1 - (i * 0.03);
-        cout << i << " y:" << y[i] << endl;
+        //cout << i << " y:" << y[i] << endl;
     }
     // create graph and assign data to it:
     int i = 2;
@@ -616,15 +626,15 @@ void MainWindow::allScreenShots()
         }
         //reset counter
         db.reset();
-        clean();
+        //cleanTemp();
     }
 }
 
-void MainWindow::clean(){
+void MainWindow::cleanTemp(){
     QDirIterator it(QDir::tempPath());
     QStringList tmp_files;
     //file extension e.g. files << ".exe" << ".dll" ...
-    tmp_files << "png";
+    tmp_files << ".png";
 
     while (it.hasNext()){
 

@@ -14,7 +14,7 @@
    <string>GLP-Tool</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../renku.qrc">
+   <iconset resource="renku.qrc">
     <normaloff>:/img/bearing_37627.jpg</normaloff>:/img/bearing_37627.jpg</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -140,7 +140,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../renku.qrc"/>
+  <include location="renku.qrc"/>
  </resources>
  <connections>
   <connection>

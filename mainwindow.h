@@ -60,7 +60,7 @@ namespace Ui {
     void loadSettings();
     void loadFile();
 	void setupDemo(int demoIndex);
-    void clean();
+    void cleanTemp();
     //void setupQuadraticDemo(QCustomPlot * customPlot);
     //void setupSimpleDemo(QCustomPlot * customPlot);
     //void setupSincScatterDemo(QCustomPlot * customPlot);
