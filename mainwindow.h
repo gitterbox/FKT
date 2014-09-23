@@ -110,6 +110,7 @@ namespace Ui {
     QString app_name;
     QString app_version;
     QString os_version;
+    QString app_mail;
     int currentAngle;
     QString x_label;
     QString y_label;

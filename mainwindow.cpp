@@ -210,29 +210,30 @@ MainWindow::MainWindow(QWidget * parent):QMainWindow(parent),
     connect(ui->action_ber, SIGNAL(triggered(bool)), this, SLOT(showAbout()));
     connect(ui->actionTestmodus_aktivieren, SIGNAL(triggered(bool)), this, SLOT(setTestmode()));
 
-    qDebug() << "initialize StartLine, EndLine and Delay";
+qDebug() << "initialize StartLine, EndLine and Delay";
 
-    //##SETTINGS###################################################################################
-    //in case loadsettings has failed
-    // or app starts up the first time
-    //we set some defaults
-    left=0;
-    right=0;
-    top=0;
-    bottom=0;
-    delay = 500; //ms
-    x_label = "X";
-    y_label = "Y";
-    app_name = "GLP-Tool";
-    app_version = "1.3.2";
-    // loadSettings does only work if settings available at all
-    // when the program starts up the first time loadsettings will not be called
-    if (!setting.allKeys().empty()) loadSettings();
-    //Todo: set default values for window  in case nothing has saved before
-    //app_icon: http://all-free-download.com/free-icon/icons/bearing_37627.html
-    //############################################################################################
+//##SETTINGS###################################################################################
+//in case loadsettings has failed
+// or app starts up the first time
+//we set some defaults
+left=0;
+right=0;
+top=0;
+bottom=0;
+delay = 500; //ms
+x_label = "X";
+y_label = "Y";
+app_name = "GLP-Tool";
+app_version = "1.3.2";
+app_mail = "rene.kummer@freenet.de";
+// loadSettings does only work if settings available at all
+// when the program starts up the first time loadsettings will not be called
+if (!setting.allKeys().empty()) loadSettings();
+//Todo: set default values for window  in case nothing has saved before
+//app_icon: http://all-free-download.com/free-icon/icons/bearing_37627.html
+//############################################################################################
 
-    setupPlayground(ui->customPlot);
+setupPlayground(ui->customPlot);
 }
 
 
@@ -246,15 +247,24 @@ void MainWindow::showAbout(){
     case QSysInfo::WV_WINDOWS8_1: os_version = "Windosw 8.1";
     default: os_version = "Windows";
     }
-    QMessageBox::information(this, "Info", app_name + " " + app_version + " (" + os_version + ")");
+    QString prog =  app_name + " " + app_version + "<br>" + "(" + os_version + ")";
+    QString author = "<br><br> [renku] 2014 <br> <a href='"+app_mail+"'>"+app_mail+"</a>";
+    QString msg = prog + author;
+    //QMessageBox::about(this, "Info", msg);
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("Help / About");
+    msgBox.setTextFormat(Qt::RichText); //this is what makes the links clickable
+    msgBox.setText(msg);
+    msgBox.exec();
+
 }
 
 void MainWindow::setupDemo(int demoIndex)
 {
-    switch (demoIndex) {
-    case 18:
-        //values = db.getLine(8);
-        setupGLPDemo(ui->customPlot);
+switch (demoIndex) {
+case 18:
+//values = db.getLine(8);
+setupGLPDemo(ui->customPlot);
         break;
     case 19:
         //values = db.getLine(9);
