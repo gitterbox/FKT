@@ -626,7 +626,6 @@ void MainWindow::allScreenShots()
         }
         //reset counter
         db.reset();
-        //cleanTemp();
     }
 }
 
